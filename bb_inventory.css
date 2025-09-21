@@ -1,0 +1,382 @@
+/* Inventory Page Specific Styles */
+
+/* Blood type card animations */
+.blood-type-card {
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.blood-type-card.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.blood-type-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Stock level specific styling */
+.blood-type-card[data-blood-type="O-"] {
+  animation: pulse-critical 2s infinite;
+}
+
+.blood-type-card[data-blood-type="O+"] {
+  border-color: #F59E0B;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+@keyframes pulse-critical {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+/* Stock level indicators */
+.stock-level-critical {
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  animation: pulse 1s infinite;
+}
+
+.stock-level-low {
+  background: rgba(245, 158, 11, 0.1);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.stock-level-good {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16A34A;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.stock-level-excellent {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563EB;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Blood type badges */
+.blood-type-badge {
+  background: linear-gradient(135deg, #DC2626, #EF4444);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Progress bars */
+.progress-bar {
+  transition: width 1s ease-in-out;
+}
+
+/* Inventory table animations */
+.inventory-row {
+  transition: all 0.2s ease;
+}
+
+.inventory-row:hover {
+  background: rgba(220, 38, 38, 0.05);
+}
+
+/* Action buttons */
+.inventory-action-btn {
+  transition: all 0.2s ease;
+}
+
+.inventory-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Modal animations */
+.modal-overlay {
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.modal-content {
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+  transform: scale(1);
+}
+
+/* Summary cards hover effects */
+.summary-card {
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.summary-card .icon-container {
+  transition: transform 0.3s ease;
+}
+
+.summary-card:hover .icon-container {
+  transform: scale(1.1);
+}
+
+/* Expiration alerts */
+.expiration-alert {
+  transition: all 0.2s ease;
+}
+
+.expiration-alert:hover {
+  transform: translateX(4px);
+}
+
+.expiration-critical {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #EF4444;
+  animation: pulse-expiration 1.5s infinite;
+}
+
+.expiration-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: #F59E0B;
+}
+
+@keyframes pulse-expiration {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Inventory trends */
+.trend-positive {
+  color: #16A34A;
+}
+
+.trend-negative {
+  color: #DC2626;
+}
+
+.trend-neutral {
+  color: #6B7280;
+}
+
+/* Export button animation */
+.export-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.export-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.export-btn:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Add stock button */
+.add-stock-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.add-stock-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.add-stock-btn:hover::before {
+  left: 100%;
+}
+
+/* Loading states */
+.inventory-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  min-height: 200px;
+  border-radius: 1rem;
+}
+
+.dark .inventory-loading {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #64748B;
+}
+
+.empty-state .icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Form validation styles */
+.field-error {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-message {
+  color: #EF4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.field-success {
+  border-color: #10B981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blood-type-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .summary-card:hover {
+    transform: none;
+  }
+  
+  .inventory-action-btn:hover {
+    transform: none;
+  }
+  
+  .expiration-alert:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .blood-type-card,
+  .inventory-action-btn,
+  .summary-card,
+  .expiration-alert {
+    animation: none;
+    transition: none;
+  }
+  
+  .stock-level-critical,
+  .expiration-critical {
+    animation: none;
+  }
+  
+  .progress-bar {
+    transition: none;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.blood-type-card:focus,
+.inventory-action-btn:focus {
+  outline: 2px solid #DC2626;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .sidebar,
+  .inventory-action-btn,
+  #add-stock-modal {
+    display: none !important;
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+  }
+  
+  .blood-type-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .blood-type-card {
+    border: 2px solid;
+  }
+  
+  .stock-level-critical,
+  .stock-level-low,
+  .stock-level-good,
+  .stock-level-excellent {
+    border-width: 2px;
+  }
+}
+
+/* Chart container for future analytics */
+.chart-container {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .chart-container {
+  background: linear-gradient(45deg, #1e293b, #334155);
+}
+
+.chart-placeholder {
+  text-align: center;
+  color: #64748B;
+}

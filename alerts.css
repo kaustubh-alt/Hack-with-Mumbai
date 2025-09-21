@@ -1,0 +1,544 @@
+/* Alerts Page Specific Styles */
+
+/* Alert item animations */
+.alert-item {
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.alert-item.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.alert-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Alert type specific styling */
+.alert-critical {
+  border-left: 4px solid #EF4444;
+  animation: pulse-critical 2s infinite;
+}
+
+.alert-urgent {
+  border-left: 4px solid #F59E0B;
+}
+
+.alert-normal {
+  border-left: 4px solid #10B981;
+}
+
+.alert-appointment {
+  border-left: 4px solid #3B82F6;
+}
+
+.alert-match {
+  border-left: 4px solid #10B981;
+}
+
+.alert-system {
+  border-left: 4px solid #8B5CF6;
+}
+
+.alert-achievement {
+  border-left: 4px solid #F59E0B;
+}
+
+@keyframes pulse-critical {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+/* Tab buttons */
+.tab-button {
+  color: #64748B;
+  background: transparent;
+}
+
+.tab-button:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #DC2626;
+}
+
+.tab-button.active {
+  background: #DC2626;
+  color: white;
+}
+
+/* Action buttons */
+.respond-btn,
+.confirm-btn,
+.update-btn,
+.view-btn {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.respond-btn:hover,
+.confirm-btn:hover,
+.update-btn:hover,
+.view-btn:hover {
+  transform: translateY(-1px);
+}
+
+.respond-btn::before,
+.confirm-btn::before,
+.update-btn::before,
+.view-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.respond-btn:hover::before,
+.confirm-btn:hover::before,
+.update-btn:hover::before,
+.view-btn:hover::before {
+  left: 100%;
+}
+
+.contact-btn,
+.reschedule-btn,
+.share-btn,
+.later-btn,
+.mark-read-btn,
+.dismiss-btn {
+  transition: all 0.2s ease;
+}
+
+.contact-btn:hover,
+.reschedule-btn:hover,
+.share-btn:hover,
+.later-btn:hover,
+.mark-read-btn:hover,
+.dismiss-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Summary cards hover effects */
+.summary-card {
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.summary-card .icon-container {
+  transition: transform 0.3s ease;
+}
+
+.summary-card:hover .icon-container {
+  transform: scale(1.1);
+}
+
+/* Priority indicators */
+.priority-critical {
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+.priority-urgent {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Unread indicator */
+.alert-unread {
+  position: relative;
+}
+
+.alert-unread::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 8px;
+  height: 8px;
+  background: #DC2626;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+/* Read state */
+.alert-read {
+  opacity: 0.7;
+}
+
+.alert-read:hover {
+  opacity: 1;
+}
+
+/* Modal animations */
+.modal-overlay {
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.modal-content {
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+  transform: scale(1);
+}
+
+/* Settings form styling */
+.settings-section {
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dark .settings-section {
+  border-bottom-color: #475569;
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #DC2626;
+  border-color: #DC2626;
+}
+
+input[type="checkbox"]:focus {
+  ring-color: #DC2626;
+}
+
+/* Time input styling */
+input[type="time"] {
+  transition: all 0.2s ease;
+}
+
+input[type="time"]:focus {
+  border-color: #DC2626;
+  ring-color: #DC2626;
+}
+
+/* Load more button */
+.load-more-btn {
+  transition: all 0.3s ease;
+}
+
+.load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.load-more-btn.loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Mark all read button */
+.mark-all-read-btn {
+  transition: all 0.2s ease;
+}
+
+.mark-all-read-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Settings button */
+.settings-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.settings-btn:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Loading states */
+.alert-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  min-height: 120px;
+  border-radius: 1rem;
+}
+
+.dark .alert-loading {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #64748B;
+}
+
+.empty-state .icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Filter animations */
+.filter-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.filter-fade-out {
+  animation: fadeOut 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Notification badges */
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #DC2626;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-3px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .alert-item:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .summary-card:hover {
+    transform: none;
+  }
+  
+  .respond-btn:hover,
+  .confirm-btn:hover,
+  .update-btn:hover,
+  .view-btn:hover,
+  .contact-btn:hover,
+  .reschedule-btn:hover,
+  .share-btn:hover,
+  .later-btn:hover,
+  .mark-read-btn:hover,
+  .dismiss-btn:hover {
+    transform: none;
+  }
+  
+  .load-more-btn:hover {
+    transform: none;
+  }
+  
+  .mark-all-read-btn:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .alert-item,
+  .respond-btn,
+  .confirm-btn,
+  .update-btn,
+  .view-btn,
+  .contact-btn,
+  .reschedule-btn,
+  .share-btn,
+  .later-btn,
+  .mark-read-btn,
+  .dismiss-btn,
+  .summary-card,
+  .load-more-btn,
+  .mark-all-read-btn {
+    animation: none;
+    transition: none;
+  }
+  
+  .alert-critical,
+  .priority-critical,
+  .priority-urgent,
+  .notification-badge {
+    animation: none;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.alert-item:focus,
+.respond-btn:focus,
+.confirm-btn:focus,
+.update-btn:focus,
+.view-btn:focus,
+.contact-btn:focus,
+.reschedule-btn:focus,
+.share-btn:focus,
+.later-btn:focus,
+.mark-read-btn:focus,
+.dismiss-btn:focus,
+.tab-button:focus {
+  outline: 2px solid #DC2626;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .sidebar,
+  .respond-btn,
+  .confirm-btn,
+  .update-btn,
+  .view-btn,
+  .contact-btn,
+  .reschedule-btn,
+  .share-btn,
+  .later-btn,
+  .mark-read-btn,
+  .dismiss-btn,
+  #settings-modal {
+    display: none !important;
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+  }
+  
+  .alert-item {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .alert-item {
+    border: 2px solid;
+  }
+  
+  .alert-critical,
+  .alert-urgent,
+  .alert-normal {
+    border-width: 3px;
+  }
+}
+
+/* Dark mode specific adjustments */
+.dark .alert-critical {
+  background: rgba(127, 29, 29, 0.2);
+  border-color: #7F1D1D;
+}
+
+.dark .alert-match {
+  background: rgba(20, 83, 45, 0.2);
+  border-color: #14532D;
+}
+
+.dark .alert-achievement {
+  background: rgba(120, 53, 15, 0.2);
+  border-color: #78350F;
+}
+
+/* Smooth scrolling for alert navigation */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

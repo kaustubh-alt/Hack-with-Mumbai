@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Nearby Camps & Blood Requests - Blood Donation Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#DC2626",
+                100: "#FEE2E2",
+                200: "#FECACA",
+                500: "#EF4444",
+                600: "#DC2626",
+                700: "#B91C1C",
+                900: "#7F1D1D",
+              },
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#0F172A",
+              "text-dark": "#F8FAFC",
+              "text-muted-light": "#64748B",
+              "text-muted-dark": "#94A3B8",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="transitions.css">
+    <link rel="stylesheet" href="nearby-camps.css">
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+
+      .sidebar-overlay {
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 256px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        width: 100%;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      .main-content.sidebar-open {
+        margin-left: 256px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content.sidebar-open {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+  >
+    <div class="flex h-screen w-full relative">
+      <!-- Mobile Sidebar Overlay -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50 sidebar-overlay z-40 md:hidden hidden"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-600 text-4xl"
+              >bloodtype</span
+            >
+            <h1 class="text-xl font-bold text-text-light dark:text-text-dark">
+              LiquidLove
+            </h1>
+          </div>
+          <button
+            id="close-sidebar"
+            class="flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <span
+              class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Sarah Miller"
+            class="size-12 rounded-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmJLuCi3VqouLiFSctDx-MXcMHNc5giLUkZMK99D_chjRqP0efr5aNWbVZruDB9ao6E1cjWkfq_YmiGVOsDBAcrTKjaUkWyLLxcvx2hOgnWXrFLwNN-n-_uVDfg_PRCWewCxDdtGptaigHsu0SYT5pmCK3Es0BywfN3XUdClrRtJdq25NOmOfTv7Pcgx0sU5RD6_fcb-QxldMvzpKt0o52T4gUFVoMsEiPMWEiba_NErMBuG6ZSxIAR8SaJPcx0qTE57ObnKN6Tg"
+          />
+          <div class="flex flex-col">
+            <h2
+              class="text-base font-semibold text-text-light dark:text-text-dark"
+            >
+              Sarah Miller
+            </h2>
+            <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+              Donor ID: 123456
+            </p>
+          </div>
+        </div>
+
+        <nav class="flex flex-col gap-2 flex-1">
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="dashboard.html"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="profile.html"
+          >
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-sm font-medium">Profile</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="history.html"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="text-sm font-medium">Donation History</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg bg-primary-100 px-4 py-2.5 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200"
+            href="nearby-camp.html"
+          >
+            <span class="material-symbols-outlined">location_on</span>
+            <span class="text-sm font-medium">Nearby Camps</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="requests.html"
+          >
+            <span class="material-symbols-outlined">bloodtype</span>
+            <span class="text-sm font-medium">Blood Requests</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="alerts.html"
+          >
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-sm font-medium">Alerts</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto">
+          <button
+            class="w-full rounded-lg bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-colors"
+          >
+            Schedule Donation
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main id="main-content" class="main-content overflow-y-auto">
+        <div class="p-4 sm:p-6 lg:p-8">
+          <div class="mx-auto max-w-7xl">
+            <!-- Header with Menu Button -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div class="flex items-center gap-4">
+                <button
+                  id="menu-button"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h1
+                  class="text-xl sm:text-2xl lg:text-3xl font-bold text-text-light dark:text-text-dark"
+                >
+                  Nearby Camps & Blood Requests
+                </h1>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <button
+                  id="refresh-data-btn"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm">refresh</span>
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <!-- Alert Notifications -->
+            <section id="alert-notifications" class="mb-8">
+              <!-- Critical alerts will be dynamically inserted here -->
+            </section>
+
+            <!-- Quick Stats -->
+            <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">location_on</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Nearby Camps</p>
+                    <p id="camps-count" class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">8</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Within 10 miles</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-red-600 dark:text-red-400">priority_high</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Urgent Requests</p>
+                    <p id="urgent-count" class="text-lg sm:text-xl font-bold text-red-600 dark:text-red-400">3</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Critical shortage</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-green-600 dark:text-green-400">bloodtype</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Your Blood Type</p>
+                    <p class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">O+</p>
+                    <p id="compatible-requests" class="text-xs text-green-600 dark:text-green-400">2 compatible requests</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">schedule</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Next Available</p>
+                    <p class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">Today</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">2:00 PM - 6:00 PM</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Filters and Search -->
+            <section class="mb-8">
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex flex-wrap items-center gap-4 mb-4">
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark">Filters</h3>
+                  <button id="clear-filters-btn" class="text-sm text-primary-600 hover:underline">Clear All</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Blood Type</label>
+                    <select id="blood-type-filter" class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-sm">
+                      <option value="">All Types</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Urgency</label>
+                    <select id="urgency-filter" class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-sm">
+                      <option value="">All Levels</option>
+                      <option value="critical">Critical</option>
+                      <option value="urgent">Urgent</option>
+                      <option value="normal">Normal</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Distance</label>
+                    <select id="distance-filter" class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-sm">
+                      <option value="">Any Distance</option>
+                      <option value="5">Within 5 miles</option>
+                      <option value="10">Within 10 miles</option>
+                      <option value="25">Within 25 miles</option>
+                      <option value="50">Within 50 miles</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Search</label>
+                    <div class="relative">
+                      <input
+                        id="search-input"
+                        type="text"
+                        placeholder="Search locations..."
+                        class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      />
+                      <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark">search</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- View Toggle -->
+            <section class="mb-6">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <button id="list-view-btn" class="p-2 rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200">
+                    <span class="material-symbols-outlined">view_list</span>
+                  </button>
+                  <button id="map-view-btn" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-text-muted-light dark:text-text-muted-dark">
+                    <span class="material-symbols-outlined">map</span>
+                  </button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Sort by:</span>
+                  <select id="sort-filter" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-sm">
+                    <option value="distance">Distance</option>
+                    <option value="urgency">Urgency</option>
+                    <option value="time">Time</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <!-- Main Content Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Left Column: Camps and Requests -->
+              <div class="lg:col-span-2 space-y-8">
+                <!-- Nearby Camps Section -->
+                <section>
+                  <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-text-light dark:text-text-dark mb-6">
+                    Nearby Blood Donation Camps
+                  </h2>
+                  <div id="camps-list" class="space-y-4">
+                    <!-- Camps will be dynamically inserted here -->
+                  </div>
+                </section>
+
+                <!-- Blood Requests Section -->
+                <section>
+                  <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-text-light dark:text-text-dark mb-6">
+                    Blood Requests
+                  </h2>
+                  <div id="requests-list" class="space-y-4">
+                    <!-- Requests will be dynamically inserted here -->
+                  </div>
+                </section>
+              </div>
+
+              <!-- Right Column: Map and Quick Actions -->
+              <div class="space-y-8">
+                <!-- Interactive Map -->
+                <section>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Location Map</h3>
+                  <div id="map-container" class="rounded-2xl border border-slate-200 bg-card-light dark:border-slate-700 dark:bg-card-dark overflow-hidden">
+                    <div class="aspect-square bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                      <div class="text-center">
+                        <span class="material-symbols-outlined text-4xl text-text-muted-light dark:text-text-muted-dark mb-2">map</span>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Interactive Map</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Showing nearby locations</p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Quick Actions</h3>
+                  <div class="space-y-3">
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-primary-600 dark:text-primary-200">add_location</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Find Nearest Camp</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Based on your location</p>
+                      </div>
+                    </button>
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-green-600 dark:text-green-400">volunteer_activism</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Emergency Response</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">For critical requests</p>
+                      </div>
+                    </button>
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">notifications</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Set Alerts</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Get notified of requests</p>
+                      </div>
+                    </button>
+                  </div>
+                </section>
+
+                <!-- Recent Activity -->
+                <section>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Recent Activity</h3>
+                  <div class="space-y-3">
+                    <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <p class="text-sm font-medium text-text-light dark:text-text-dark">New urgent request</p>
+                      <p class="text-xs text-text-muted-light dark:text-text-muted-dark">O- needed at City Hospital</p>
+                      <p class="text-xs text-text-muted-light dark:text-text-muted-dark">2 minutes ago</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <p class="text-sm font-medium text-text-light dark:text-text-dark">Camp opened nearby</p>
+                      <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Community Center - 0.8 miles</p>
+                      <p class="text-xs text-text-muted-light dark:text-text-muted-dark">15 minutes ago</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <p class="text-sm font-medium text-text-light dark:text-text-dark">Request fulfilled</p>
+                      <p class="text-xs text-text-muted-light dark:text-text-muted-dark">AB+ at Regional Hospital</p>
+                      <p class="text-xs text-text-muted-light dark:text-text-muted-dark">1 hour ago</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Response Modal -->
+    <div id="response-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-card-light dark:bg-card-dark rounded-2xl p-6 w-full max-w-md">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-text-light dark:text-text-dark">Respond to Request</h3>
+          <button id="close-modal" class="text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div id="modal-content">
+          <!-- Modal content will be dynamically inserted -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Load transition system
+      const transitionScript = document.createElement('script');
+      transitionScript.src = 'transitions.js';
+      document.head.appendChild(transitionScript);
+    </script>
+    <script src="nearby-camps.js"></script>
+  </body>
+</html>

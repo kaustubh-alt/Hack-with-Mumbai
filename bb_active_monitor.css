@@ -1,0 +1,331 @@
+/* Active Monitor Page Specific Styles */
+
+/* Live stat card animations */
+.live-stat-card {
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.live-stat-card.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.live-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Camp monitor card animations */
+.camp-monitor-card {
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.camp-monitor-card.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.camp-monitor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Live indicator pulse */
+.live-indicator {
+  animation: pulse-live 2s infinite;
+}
+
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Progress bar animations */
+.progress-bar {
+  transition: width 1s ease-in-out;
+}
+
+/* Activity feed animations */
+.activity-item {
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.activity-item.loaded {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.activity-item:hover {
+  background: rgba(220, 38, 38, 0.05);
+  border-left: 3px solid #DC2626;
+  padding-left: 0.75rem;
+}
+
+/* Real-time data updates */
+.data-update {
+  animation: highlight 0.5s ease-in-out;
+}
+
+@keyframes highlight {
+  0% { background-color: rgba(220, 38, 38, 0.2); }
+  100% { background-color: transparent; }
+}
+
+/* Status indicators */
+.status-excellent {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.status-good {
+  color: #0891B2;
+  background: rgba(6, 182, 212, 0.1);
+}
+
+.status-warning {
+  color: #D97706;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.status-critical {
+  color: #DC2626;
+  background: rgba(239, 68, 68, 0.1);
+  animation: pulse-critical 1s infinite;
+}
+
+@keyframes pulse-critical {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Auto-refresh toggle */
+.toggle-switch {
+  transition: all 0.2s ease;
+}
+
+.toggle-switch:checked {
+  background-color: #DC2626;
+}
+
+/* Quick action buttons */
+.quick-action-btn {
+  transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Alert cards */
+.alert-card {
+  transition: all 0.3s ease;
+}
+
+.alert-card:hover {
+  transform: translateX(4px);
+}
+
+/* Performance metrics */
+.performance-metric {
+  transition: all 0.2s ease;
+}
+
+.performance-metric:hover {
+  transform: scale(1.05);
+}
+
+/* Live chart container */
+.chart-container {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .chart-container {
+  background: linear-gradient(45deg, #1e293b, #334155);
+}
+
+.chart-placeholder {
+  text-align: center;
+  color: #64748B;
+}
+
+/* Refresh button animation */
+.refresh-btn {
+  transition: all 0.2s ease;
+}
+
+.refresh-btn:hover {
+  transform: rotate(90deg);
+}
+
+/* Loading states */
+.monitor-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  min-height: 200px;
+  border-radius: 1rem;
+}
+
+.dark .monitor-loading {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Connection status indicator */
+.connection-status {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.connection-online {
+  background: #10B981;
+  color: white;
+}
+
+.connection-offline {
+  background: #EF4444;
+  color: white;
+  animation: pulse 1s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .live-stat-card:hover,
+  .camp-monitor-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .activity-item:hover {
+    transform: none;
+    background: none;
+    border-left: none;
+    padding-left: 0.75rem;
+  }
+  
+  .quick-action-btn:hover {
+    transform: none;
+  }
+  
+  .performance-metric:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .live-stat-card,
+  .camp-monitor-card,
+  .activity-item,
+  .quick-action-btn,
+  .performance-metric,
+  .alert-card {
+    animation: none;
+    transition: none;
+  }
+  
+  .live-indicator,
+  .status-critical,
+  .connection-offline {
+    animation: none;
+  }
+  
+  .progress-bar {
+    transition: none;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.live-stat-card:focus,
+.camp-monitor-card:focus,
+.quick-action-btn:focus {
+  outline: 2px solid #DC2626;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .sidebar,
+  .quick-action-btn,
+  .connection-status {
+    display: none !important;
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+  }
+  
+  .live-stat-card,
+  .camp-monitor-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .live-stat-card,
+  .camp-monitor-card {
+    border: 2px solid;
+  }
+  
+  .status-excellent,
+  .status-good,
+  .status-warning,
+  .status-critical {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Dark mode specific adjustments */
+.dark .activity-item:hover {
+  background: rgba(127, 29, 29, 0.2);
+}
+
+/* Smooth scrolling for activity feed */
+.activity-feed {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-feed {
+    scroll-behavior: auto;
+  }
+}

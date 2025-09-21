@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Blood Inventory - Blood Bank Admin</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#DC2626",
+                100: "#FEE2E2",
+                200: "#FECACA",
+                500: "#EF4444",
+                600: "#DC2626",
+                700: "#B91C1C",
+                900: "#7F1D1D",
+              },
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#0F172A",
+              "text-dark": "#F8FAFC",
+              "text-muted-light": "#64748B",
+              "text-muted-dark": "#94A3B8",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="transitions.css">
+    <link rel="stylesheet" href="bb_inventory.css">
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+
+      .sidebar-overlay {
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 256px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        width: 100%;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      .main-content.sidebar-open {
+        margin-left: 256px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content.sidebar-open {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+  >
+    <div class="flex h-screen w-full relative">
+      <!-- Mobile Sidebar Overlay -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50 sidebar-overlay z-40 md:hidden hidden"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-600 text-4xl"
+              >local_hospital</span
+            >
+            <div>
+              <h1 class="text-xl font-bold text-text-light dark:text-text-dark">
+                BloodBank
+              </h1>
+              <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Admin Panel</p>
+            </div>
+          </div>
+          <button
+            id="close-sidebar"
+            class="flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <span
+              class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Admin User"
+            class="size-12 rounded-full object-cover"
+            src="https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2"
+          />
+          <div class="flex flex-col">
+            <h2
+              class="text-base font-semibold text-text-light dark:text-text-dark"
+            >
+              Dr. Sarah Wilson
+            </h2>
+            <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+              Blood Bank Manager
+            </p>
+          </div>
+        </div>
+
+        <nav class="flex flex-col gap-2 flex-1">
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_dashboard.html"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_create_camp.html"
+          >
+            <span class="material-symbols-outlined">add_location</span>
+            <span class="text-sm font-medium">Create Camp</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_manage_camps.html"
+          >
+            <span class="material-symbols-outlined">event</span>
+            <span class="text-sm font-medium">Manage Camps</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_active_monitor.html"
+          >
+            <span class="material-symbols-outlined">monitor_heart</span>
+            <span class="text-sm font-medium">Active Monitor</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_emergency_alerts.html"
+          >
+            <span class="material-symbols-outlined">emergency</span>
+            <span class="text-sm font-medium">Emergency Alerts</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_raise_request.html"
+          >
+            <span class="material-symbols-outlined">campaign</span>
+            <span class="text-sm font-medium">Raise Request</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg bg-primary-100 px-4 py-2.5 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200"
+            href="bb_inventory.html"
+          >
+            <span class="material-symbols-outlined">inventory</span>
+            <span class="text-sm font-medium">Inventory</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_donors.html"
+          >
+            <span class="material-symbols-outlined">group</span>
+            <span class="text-sm font-medium">Donor Database</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto">
+          <button
+            class="w-full rounded-lg bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-colors"
+          >
+            Emergency Alert
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main id="main-content" class="main-content overflow-y-auto">
+        <div class="p-4 sm:p-6 lg:p-8">
+          <div class="mx-auto max-w-7xl">
+            <!-- Header -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div class="flex items-center gap-4">
+                <button
+                  id="menu-button"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                  <h1
+                    class="text-xl sm:text-2xl lg:text-3xl font-bold text-text-light dark:text-text-dark"
+                  >
+                    Blood Inventory Management
+                  </h1>
+                  <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                    Monitor and manage blood stock levels across all facilities
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <button
+                  id="export-inventory-btn"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm">download</span>
+                  Export
+                </button>
+                <button
+                  id="add-inventory-btn"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm">add</span>
+                  Add Stock
+                </button>
+              </div>
+            </div>
+
+            <!-- Inventory Overview Cards -->
+            <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">bloodtype</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Total Units</p>
+                    <p class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">2,847</p>
+                    <p class="text-xs text-blue-600 dark:text-blue-400">All blood types</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-red-600 dark:text-red-400">warning</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Critical Levels</p>
+                    <p class="text-lg sm:text-xl font-bold text-red-600 dark:text-red-400">3</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Blood types</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-green-600 dark:text-green-400">trending_up</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">This Week</p>
+                    <p class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">+342</p>
+                    <p class="text-xs text-green-600 dark:text-green-400">Units collected</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">schedule</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Expiring Soon</p>
+                    <p class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">47</p>
+                    <p class="text-xs text-yellow-600 dark:text-yellow-400">Within 7 days</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Blood Type Inventory Grid -->
+            <section class="mb-8">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-text-light dark:text-text-dark">
+                  Blood Type Inventory
+                </h2>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-text-muted-light dark:text-text-muted-dark">Last updated:</span>
+                  <span id="last-updated" class="text-xs font-medium text-text-light dark:text-text-dark">2 minutes ago</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- A+ Blood Type -->
+                <div class="blood-type-card rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark" data-blood-type="A+">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="flex size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
+                        <span class="material-symbols-outlined text-green-600 dark:text-green-400">bloodtype</span>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark">A+</h3>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Positive</p>
+                      </div>
+                    </div>
+                    <span class="stock-level-good inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/50 dark:text-green-300">Good</span>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Current Stock</span>
+                        <span class="font-medium">245 units</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+                        <div class="bg-green-600 h-3 rounded-full transition-all duration-1000" style="width: 75%"></div>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Min Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">100</p>
+                      </div>
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Max Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">400</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="flex-1 px-3 py-2 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 transition-colors">
+                        Update Stock
+                      </button>
+                      <button class="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        View History
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- O- Blood Type (Critical) -->
+                <div class="blood-type-card rounded-2xl border-2 border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20" data-blood-type="O-">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="flex size-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50">
+                        <span class="material-symbols-outlined text-red-600 dark:text-red-400">bloodtype</span>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark">O-</h3>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Universal Donor</p>
+                      </div>
+                    </div>
+                    <span class="stock-level-critical inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900/50 dark:text-red-300">Critical</span>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Current Stock</span>
+                        <span class="font-medium text-red-600 dark:text-red-400">67 units</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+                        <div class="bg-red-600 h-3 rounded-full transition-all duration-1000" style="width: 25%"></div>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Min Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">150</p>
+                      </div>
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Max Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">300</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="flex-1 px-3 py-2 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors">
+                        Emergency Alert
+                      </button>
+                      <button class="flex-1 px-3 py-2 rounded-lg border border-red-200 dark:border-red-700 text-red-600 dark:text-red-400 text-xs font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        View History
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- O+ Blood Type -->
+                <div class="blood-type-card rounded-2xl border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20" data-blood-type="O+">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="flex size-12 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/50">
+                        <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">bloodtype</span>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark">O+</h3>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Most Common</p>
+                      </div>
+                    </div>
+                    <span class="stock-level-low inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300">Low</span>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Current Stock</span>
+                        <span class="font-medium">189 units</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+                        <div class="bg-yellow-600 h-3 rounded-full transition-all duration-1000" style="width: 45%"></div>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Min Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">200</p>
+                      </div>
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Max Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">500</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="flex-1 px-3 py-2 rounded-lg bg-yellow-600 text-white text-xs font-medium hover:bg-yellow-700 transition-colors">
+                        Send Alert
+                      </button>
+                      <button class="flex-1 px-3 py-2 rounded-lg border border-yellow-200 dark:border-yellow-700 text-yellow-600 dark:text-yellow-400 text-xs font-medium hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors">
+                        View History
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- AB+ Blood Type -->
+                <div class="blood-type-card rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark" data-blood-type="AB+">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="flex size-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
+                        <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">bloodtype</span>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-text-light dark:text-text-dark">AB+</h3>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Universal Recipient</p>
+                      </div>
+                    </div>
+                    <span class="stock-level-good inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/50 dark:text-green-300">Good</span>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Current Stock</span>
+                        <span class="font-medium">123 units</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
+                        <div class="bg-green-600 h-3 rounded-full transition-all duration-1000" style="width: 60%"></div>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Min Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">80</p>
+                      </div>
+                      <div>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Max Level</p>
+                        <p class="text-sm font-semibold text-text-light dark:text-text-dark">200</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="flex-1 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 transition-colors">
+                        Update Stock
+                      </button>
+                      <button class="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        View History
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Detailed Inventory Table -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Inventory Table -->
+              <div class="lg:col-span-2">
+                <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-text-light dark:text-text-dark mb-6">
+                  Detailed Inventory
+                </h2>
+                <div class="rounded-2xl border border-slate-200 bg-card-light dark:border-slate-700 dark:bg-card-dark overflow-hidden">
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                      <thead class="bg-slate-50 dark:bg-slate-800/50">
+                        <tr>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">
+                            Blood Type
+                          </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">
+                            Current Stock
+                          </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">
+                            Expiring Soon
+                          </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-card-light dark:bg-card-dark divide-y divide-slate-200 dark:divide-slate-700">
+                        <tr class="inventory-row">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <span class="blood-type-badge">A+</span>
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-text-light dark:text-text-dark">
+                            245 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/50 dark:text-green-300">
+                              Good
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-text-muted-light dark:text-text-muted-dark">
+                            12 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-primary-600 hover:text-primary-900 mr-3">Edit</button>
+                            <button class="text-blue-600 hover:text-blue-900">History</button>
+                          </td>
+                        </tr>
+                        <tr class="inventory-row">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <span class="blood-type-badge">O-</span>
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400 font-medium">
+                            67 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900/50 dark:text-red-300">
+                              Critical
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-text-muted-light dark:text-text-muted-dark">
+                            8 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-red-600 hover:text-red-900 mr-3">Alert</button>
+                            <button class="text-blue-600 hover:text-blue-900">History</button>
+                          </td>
+                        </tr>
+                        <tr class="inventory-row">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <span class="blood-type-badge">O+</span>
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-yellow-600 dark:text-yellow-400 font-medium">
+                            189 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300">
+                              Low
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-text-muted-light dark:text-text-muted-dark">
+                            15 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-yellow-600 hover:text-yellow-900 mr-3">Alert</button>
+                            <button class="text-blue-600 hover:text-blue-900">History</button>
+                          </td>
+                        </tr>
+                        <tr class="inventory-row">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <span class="blood-type-badge">AB+</span>
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-text-light dark:text-text-dark">
+                            123 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/50 dark:text-green-300">
+                              Good
+                            </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-text-muted-light dark:text-text-muted-dark">
+                            7 units
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-primary-600 hover:text-primary-900 mr-3">Edit</button>
+                            <button class="text-blue-600 hover:text-blue-900">History</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Inventory Management Panel -->
+              <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Quick Actions</h3>
+                  <div class="space-y-3">
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-red-600 dark:text-red-400">add_alert</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Low Stock Alert</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Send shortage notification</p>
+                      </div>
+                    </button>
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">add_box</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Add New Stock</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Record new donations</p>
+                      </div>
+                    </button>
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">update</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Update Levels</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Adjust stock quantities</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Expiration Alerts -->
+                <div>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Expiration Alerts</h3>
+                  <div class="space-y-3">
+                    <div class="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                      <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-red-600 dark:text-red-400 mt-0.5">warning</span>
+                        <div>
+                          <p class="text-sm font-medium text-red-800 dark:text-red-200">Expiring Today</p>
+                          <p class="text-xs text-red-700 dark:text-red-300">8 units of O+ blood expire today</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+                      <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400 mt-0.5">schedule</span>
+                        <div>
+                          <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Expiring This Week</p>
+                          <p class="text-xs text-yellow-700 dark:text-yellow-300">39 units across all blood types</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Inventory Trends -->
+                <div>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Inventory Trends</h3>
+                  <div class="rounded-2xl border border-slate-200 bg-card-light p-4 dark:border-slate-700 dark:bg-card-dark">
+                    <div class="space-y-3">
+                      <div class="flex justify-between">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Weekly Collection</span>
+                        <span class="font-semibold text-green-600 dark:text-green-400">+342 units</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Weekly Usage</span>
+                        <span class="font-semibold text-text-light dark:text-text-dark">-298 units</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Net Change</span>
+                        <span class="font-semibold text-green-600 dark:text-green-400">+44 units</span>
+                      </div>
+                      <div class="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Turnover Rate</span>
+                        <span class="font-semibold text-text-light dark:text-text-dark">12.5 days</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Stock Modal -->
+    <div id="add-stock-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-card-light dark:bg-card-dark rounded-2xl p-6 w-full max-w-md">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-semibold text-text-light dark:text-text-dark">Add Blood Stock</h3>
+          <button id="close-add-stock-modal" class="text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form id="add-stock-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Blood Type</label>
+            <select required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2">
+              <option value="">Select Blood Type</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Units to Add</label>
+            <input type="number" min="1" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2" placeholder="Number of units">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Expiration Date</label>
+            <input type="date" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Source</label>
+            <select class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2">
+              <option value="donation">Blood Donation Camp</option>
+              <option value="transfer">Transfer from Other Facility</option>
+              <option value="purchase">Purchase</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="flex gap-3 pt-4">
+            <button type="submit" class="flex-1 px-4 py-2 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors">
+              Add Stock
+            </button>
+            <button type="button" id="cancel-add-stock" class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Load transition system
+      const transitionScript = document.createElement('script');
+      transitionScript.src = 'transitions.js';
+      document.head.appendChild(transitionScript);
+    </script>
+    <script src="bb_inventory.js"></script>
+  </body>
+</html>

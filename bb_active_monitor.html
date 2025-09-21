@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Active Monitor - Blood Bank Admin</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#DC2626",
+                100: "#FEE2E2",
+                200: "#FECACA",
+                500: "#EF4444",
+                600: "#DC2626",
+                700: "#B91C1C",
+                900: "#7F1D1D",
+              },
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#0F172A",
+              "text-dark": "#F8FAFC",
+              "text-muted-light": "#64748B",
+              "text-muted-dark": "#94A3B8",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="transitions.css">
+    <link rel="stylesheet" href="bb_active_monitor.css">
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+
+      .sidebar-overlay {
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 256px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        width: 100%;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      .main-content.sidebar-open {
+        margin-left: 256px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content.sidebar-open {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+  >
+    <div class="flex h-screen w-full relative">
+      <!-- Mobile Sidebar Overlay -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50 sidebar-overlay z-40 md:hidden hidden"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-600 text-4xl"
+              >local_hospital</span
+            >
+            <div>
+              <h1 class="text-xl font-bold text-text-light dark:text-text-dark">
+                BloodBank
+              </h1>
+              <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Admin Panel</p>
+            </div>
+          </div>
+          <button
+            id="close-sidebar"
+            class="flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <span
+              class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Admin User"
+            class="size-12 rounded-full object-cover"
+            src="https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2"
+          />
+          <div class="flex flex-col">
+            <h2
+              class="text-base font-semibold text-text-light dark:text-text-dark"
+            >
+              Dr. Sarah Wilson
+            </h2>
+            <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+              Blood Bank Manager
+            </p>
+          </div>
+        </div>
+
+        <nav class="flex flex-col gap-2 flex-1">
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_dashboard.html"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_create_camp.html"
+          >
+            <span class="material-symbols-outlined">add_location</span>
+            <span class="text-sm font-medium">Create Camp</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_manage_camps.html"
+          >
+            <span class="material-symbols-outlined">event</span>
+            <span class="text-sm font-medium">Manage Camps</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg bg-primary-100 px-4 py-2.5 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200"
+            href="bb_active_monitor.html"
+          >
+            <span class="material-symbols-outlined">monitor_heart</span>
+            <span class="text-sm font-medium">Active Monitor</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_emergency_alerts.html"
+          >
+            <span class="material-symbols-outlined">emergency</span>
+            <span class="text-sm font-medium">Emergency Alerts</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_raise_request.html"
+          >
+            <span class="material-symbols-outlined">campaign</span>
+            <span class="text-sm font-medium">Raise Request</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_inventory.html"
+          >
+            <span class="material-symbols-outlined">inventory</span>
+            <span class="text-sm font-medium">Inventory</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_donors.html"
+          >
+            <span class="material-symbols-outlined">group</span>
+            <span class="text-sm font-medium">Donor Database</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto">
+          <button
+            class="w-full rounded-lg bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-colors"
+          >
+            Emergency Alert
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main id="main-content" class="main-content overflow-y-auto">
+        <div class="p-4 sm:p-6 lg:p-8">
+          <div class="mx-auto max-w-7xl">
+            <!-- Header -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div class="flex items-center gap-4">
+                <button
+                  id="menu-button"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                  <h1
+                    class="text-xl sm:text-2xl lg:text-3xl font-bold text-text-light dark:text-text-dark"
+                  >
+                    Active Camp Monitor
+                  </h1>
+                  <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                    Real-time monitoring of active donation camps
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex items-center gap-2 text-sm">
+                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span class="text-text-muted-light dark:text-text-muted-dark">Live</span>
+                </div>
+                <button
+                  id="refresh-btn"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm">refresh</span>
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Stats -->
+            <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+              <div class="live-stat-card rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-green-600 dark:text-green-400">event_available</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Active Camps</p>
+                    <p id="active-camps-count" class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">3</p>
+                    <p class="text-xs text-green-600 dark:text-green-400">Currently running</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="live-stat-card rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">group</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Donors Today</p>
+                    <p id="donors-today-count" class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">47</p>
+                    <p class="text-xs text-blue-600 dark:text-blue-400">+12 in last hour</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="live-stat-card rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-primary-600 dark:text-primary-200">bloodtype</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Units Collected</p>
+                    <p id="units-collected-count" class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">42</p>
+                    <p class="text-xs text-primary-600 dark:text-primary-200">89% success rate</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="live-stat-card rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">schedule</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Avg Wait Time</p>
+                    <p id="avg-wait-time" class="text-lg sm:text-xl font-bold text-text-light dark:text-text-dark">18 min</p>
+                    <p class="text-xs text-yellow-600 dark:text-yellow-400">Within target</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Active Camps Grid -->
+            <section class="mb-8">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-text-light dark:text-text-dark">
+                  Live Camp Status
+                </h2>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-text-muted-light dark:text-text-muted-dark">Auto-refresh:</span>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="auto-refresh-toggle" class="sr-only peer" checked>
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <!-- Active Camp 1 -->
+                <div class="camp-monitor-card rounded-2xl border border-green-200 bg-green-50 p-6 dark:border-green-800 dark:bg-green-900/20">
+                  <div class="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 class="font-semibold text-text-light dark:text-text-dark">Community Center Drive</h3>
+                      <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Downtown Community Center</p>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span class="text-xs text-green-600 dark:text-green-400 font-medium">Live</span>
+                    </div>
+                  </div>
+                  
+                  <div class="space-y-4">
+                    <!-- Progress Indicators -->
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Donors</span>
+                        <span class="font-medium">18/23 checked in</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-1000" style="width: 78%"></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Blood Collection</span>
+                        <span class="font-medium">15/40 units</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div class="bg-primary-600 h-2 rounded-full transition-all duration-1000" style="width: 38%"></div>
+                      </div>
+                    </div>
+
+                    <!-- Live Stats -->
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                      <div class="text-center">
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Wait Time</p>
+                        <p class="text-lg font-bold text-text-light dark:text-text-dark">12 min</p>
+                      </div>
+                      <div class="text-center">
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Success Rate</p>
+                        <p class="text-lg font-bold text-green-600 dark:text-green-400">94%</p>
+                      </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="flex gap-2 pt-2">
+                      <button class="flex-1 px-3 py-2 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 transition-colors">
+                        View Details
+                      </button>
+                      <button class="flex-1 px-3 py-2 rounded-lg border border-green-200 dark:border-green-700 text-green-600 dark:text-green-400 text-xs font-medium hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors">
+                        Send Update
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Active Camp 2 -->
+                <div class="camp-monitor-card rounded-2xl border border-blue-200 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-900/20">
+                  <div class="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 class="font-semibold text-text-light dark:text-text-dark">Hospital Mobile Unit</h3>
+                      <p class="text-sm text-text-muted-light dark:text-text-muted-dark">City Hospital Parking</p>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">Live</span>
+                    </div>
+                  </div>
+                  
+                  <div class="space-y-4">
+                    <!-- Progress Indicators -->
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Donors</span>
+                        <span class="font-medium">12/20 checked in</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-1000" style="width: 60%"></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Blood Collection</span>
+                        <span class="font-medium">11/18 units</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div class="bg-primary-600 h-2 rounded-full transition-all duration-1000" style="width: 61%"></div>
+                      </div>
+                    </div>
+
+                    <!-- Live Stats -->
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                      <div class="text-center">
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Wait Time</p>
+                        <p class="text-lg font-bold text-text-light dark:text-text-dark">25 min</p>
+                      </div>
+                      <div class="text-center">
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Success Rate</p>
+                        <p class="text-lg font-bold text-blue-600 dark:text-blue-400">92%</p>
+                      </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="flex gap-2 pt-2">
+                      <button class="flex-1 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 transition-colors">
+                        View Details
+                      </button>
+                      <button class="flex-1 px-3 py-2 rounded-lg border border-blue-200 dark:border-blue-700 text-blue-600 dark:text-blue-400 text-xs font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                        Send Update
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Active Camp 3 -->
+                <div class="camp-monitor-card rounded-2xl border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20">
+                  <div class="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 class="font-semibold text-text-light dark:text-text-dark">Shopping Mall Drive</h3>
+                      <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Metro Shopping Center</p>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                      <span class="text-xs text-yellow-600 dark:text-yellow-400 font-medium">Live</span>
+                    </div>
+                  </div>
+                  
+                  <div class="space-y-4">
+                    <!-- Progress Indicators -->
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Donors</span>
+                        <span class="font-medium">8/15 checked in</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div class="bg-yellow-600 h-2 rounded-full transition-all duration-1000" style="width: 53%"></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-text-muted-light dark:text-text-muted-dark">Blood Collection</span>
+                        <span class="font-medium">7/12 units</span>
+                      </div>
+                      <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                        <div class="bg-primary-600 h-2 rounded-full transition-all duration-1000" style="width: 58%"></div>
+                      </div>
+                    </div>
+
+                    <!-- Live Stats -->
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                      <div class="text-center">
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Wait Time</p>
+                        <p class="text-lg font-bold text-text-light dark:text-text-dark">8 min</p>
+                      </div>
+                      <div class="text-center">
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Success Rate</p>
+                        <p class="text-lg font-bold text-yellow-600 dark:text-yellow-400">88%</p>
+                      </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="flex gap-2 pt-2">
+                      <button class="flex-1 px-3 py-2 rounded-lg bg-yellow-600 text-white text-xs font-medium hover:bg-yellow-700 transition-colors">
+                        View Details
+                      </button>
+                      <button class="flex-1 px-3 py-2 rounded-lg border border-yellow-200 dark:border-yellow-700 text-yellow-600 dark:text-yellow-400 text-xs font-medium hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors">
+                        Send Update
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Real-time Activity Feed -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Activity Feed -->
+              <div class="lg:col-span-2">
+                <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-text-light dark:text-text-dark mb-6">
+                  Live Activity Feed
+                </h2>
+                <div class="rounded-2xl border border-slate-200 bg-card-light dark:border-slate-700 dark:bg-card-dark">
+                  <div class="p-6">
+                    <div id="activity-feed" class="space-y-4 max-h-96 overflow-y-auto">
+                      <!-- Activity items will be dynamically inserted -->
+                      <div class="activity-item flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                        <div class="flex size-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 flex-shrink-0">
+                          <span class="material-symbols-outlined text-green-600 dark:text-green-400 text-sm">check_circle</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-sm font-medium text-text-light dark:text-text-dark">
+                            Donor checked in at Community Center
+                          </p>
+                          <p class="text-xs text-text-muted-light dark:text-text-muted-dark">
+                            Sarah M. • O+ blood type • 2 minutes ago
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="activity-item flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                        <div class="flex size-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0">
+                          <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm">bloodtype</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-sm font-medium text-text-light dark:text-text-dark">
+                            Blood unit collected successfully
+                          </p>
+                          <p class="text-xs text-text-muted-light dark:text-text-muted-dark">
+                            Hospital Mobile Unit • A+ • 3 minutes ago
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="activity-item flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                        <div class="flex size-8 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex-shrink-0">
+                          <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400 text-sm">person_add</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-sm font-medium text-text-light dark:text-text-dark">
+                            New donor registration
+                          </p>
+                          <p class="text-xs text-text-muted-light dark:text-text-muted-dark">
+                            Shopping Mall Drive • Walk-in • 5 minutes ago
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="activity-item flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                        <div class="flex size-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50 flex-shrink-0">
+                          <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-sm">warning</span>
+                        </div>
+                        <div class="flex-1">
+                          <p class="text-sm font-medium text-text-light dark:text-text-dark">
+                            Donor deferred - low hemoglobin
+                          </p>
+                          <p class="text-xs text-text-muted-light dark:text-text-muted-dark">
+                            Community Center • Referred to physician • 7 minutes ago
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Actions & Alerts -->
+              <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Quick Actions</h3>
+                  <div class="space-y-3">
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-primary-600 dark:text-primary-200">campaign</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Send Alert</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Notify all active camps</p>
+                      </div>
+                    </button>
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-green-600 dark:text-green-400">assessment</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Generate Report</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Daily summary report</p>
+                      </div>
+                    </button>
+                    <button class="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                      <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">notifications</span>
+                      <div class="text-left">
+                        <p class="font-medium text-text-light dark:text-text-dark">Broadcast Message</p>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Send to all donors</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- System Alerts -->
+                <div>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">System Alerts</h3>
+                  <div class="space-y-3">
+                    <div class="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                      <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-red-600 dark:text-red-400 mt-0.5">warning</span>
+                        <div>
+                          <p class="text-sm font-medium text-red-800 dark:text-red-200">High wait time detected</p>
+                          <p class="text-xs text-red-700 dark:text-red-300">Hospital Mobile Unit - 25 min average</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+                      <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400 mt-0.5">info</span>
+                        <div>
+                          <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Low registration alert</p>
+                          <p class="text-xs text-yellow-700 dark:text-yellow-300">Shopping Mall Drive - Only 8 donors</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Performance Summary -->
+                <div>
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-4">Today's Performance</h3>
+                  <div class="rounded-2xl border border-slate-200 bg-card-light p-4 dark:border-slate-700 dark:bg-card-dark">
+                    <div class="space-y-3">
+                      <div class="flex justify-between">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Overall Success Rate</span>
+                        <span class="font-semibold text-green-600 dark:text-green-400">91%</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Average Wait Time</span>
+                        <span class="font-semibold text-text-light dark:text-text-dark">15 min</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Total Check-ins</span>
+                        <span class="font-semibold text-text-light dark:text-text-dark">38</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Units Collected</span>
+                        <span class="font-semibold text-primary-600 dark:text-primary-200">33</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Load transition system
+      const transitionScript = document.createElement('script');
+      transitionScript.src = 'transitions.js';
+      document.head.appendChild(transitionScript);
+    </script>
+    <script src="bb_active_monitor.js"></script>
+  </body>
+</html>

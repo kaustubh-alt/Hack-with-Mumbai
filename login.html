@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Lifeblood Connect - Login</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ec1337",
+              "background-light": "#f8f6f6",
+              "background-dark": "#221013",
+            },
+            fontFamily: {
+              display: ["Lexend"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200"
+  >
+    <link rel="stylesheet" href="transitions.css">
+    <div class="flex flex-col md:flex-row min-h-screen">
+      <div
+        class="w-full md:w-1/2 flex flex-col items-center justify-center p-8 lg:p-12 order-2 md:order-1"
+      >
+        <div class="w-full max-w-md">
+          <div class="text-center md:text-left mb-10">
+            <div
+              class="flex items-center justify-center md:justify-start gap-3 mb-2"
+            >
+              <span class="material-symbols-outlined text-primary text-4xl">
+                bloodtype
+              </span>
+              <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                Lifeblood Connect
+              </h1>
+            </div>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              Welcome Back
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">
+              Sign in to continue your life-saving journey.
+            </p>
+          </div>
+          <form class="space-y-6">
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                for="email"
+                >Username or Email</label
+              >
+              <div class="mt-1">
+                <input
+                  autocomplete="email"
+                  class="appearance-none block w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-black/20 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                  id="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  required=""
+                  type="email"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                for="password"
+                >Password</label
+              >
+              <div class="mt-1">
+                <input
+                  autocomplete="current-password"
+                  class="appearance-none block w-full px-4 py-3 rounded-lg bg-white/50 dark:bg-black/20 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  required=""
+                  type="password"
+                />
+              </div>
+            </div>
+            <div class="flex items-center justify-end">
+              <div class="text-sm">
+                <a
+                  class="font-medium text-primary hover:text-primary/80"
+                  href="forgot-password.html"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+            </div>
+            <div>
+              <button
+                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark focus:ring-primary"
+                type="submit"
+              >
+                Login
+              </button>
+            </div>
+          </form>
+          <p class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account?
+            <a class="font-medium text-primary hover:text-primary/80" href="register.html">
+              Register
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 order-1 md:order-2">
+        <img
+          alt="Blood donation themed illustration"
+          class="w-full h-64 md:h-full object-cover"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFeUNQMjq3oOOzhaRiEj3M1Ym8D6XofaKuaNRDI3krj-ki45Tl_MjkRKbDbGx7vcmYyNrsY6gNMtxiK9anEYZdQ6uUuMaMjMDlCeQR7_OiUSFD-cuO7hGwG0PV2mGvEqsGHswE8K19WHyL5N-s76Ch8FGx4Pd214u-_mHc-gxdiqxhtWCjQYRVY7eaM3o9RgKkc1eeAhbKHjhOkPA9cel6ghpahhb_N5ixjnCC3ewsDo8XmTBeRudn9kRA4s734D2HNQCvNyyu9Q"
+        />
+      </div>
+    </div>
+    <script>
+      // Load transition system
+      const transitionScript = document.createElement('script');
+      transitionScript.src = 'transitions.js';
+      document.head.appendChild(transitionScript);
+    </script>
+    <script type="module" src="login.js"></script>
+  </body>
+</html>

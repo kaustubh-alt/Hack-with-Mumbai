@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Create Blood Donation Camp - Blood Bank Admin</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#DC2626",
+                100: "#FEE2E2",
+                200: "#FECACA",
+                500: "#EF4444",
+                600: "#DC2626",
+                700: "#B91C1C",
+                900: "#7F1D1D",
+              },
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#0F172A",
+              "text-dark": "#F8FAFC",
+              "text-muted-light": "#64748B",
+              "text-muted-dark": "#94A3B8",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="transitions.css">
+    <link rel="stylesheet" href="bb_create_camp.css">
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+
+      .sidebar-overlay {
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 256px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        width: 100%;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      .main-content.sidebar-open {
+        margin-left: 256px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content.sidebar-open {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+  >
+    <div class="flex h-screen w-full relative">
+      <!-- Mobile Sidebar Overlay -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50 sidebar-overlay z-40 md:hidden hidden"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-600 text-4xl"
+              >local_hospital</span
+            >
+            <div>
+              <h1 class="text-xl font-bold text-text-light dark:text-text-dark">
+                BloodBank
+              </h1>
+              <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Admin Panel</p>
+            </div>
+          </div>
+          <button
+            id="close-sidebar"
+            class="flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <span
+              class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Admin User"
+            class="size-12 rounded-full object-cover"
+            src="https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2"
+          />
+          <div class="flex flex-col">
+            <h2
+              class="text-base font-semibold text-text-light dark:text-text-dark"
+            >
+              Dr. Sarah Wilson
+            </h2>
+            <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+              Blood Bank Manager
+            </p>
+          </div>
+        </div>
+
+        <nav class="flex flex-col gap-2 flex-1">
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_dashboard.html"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg bg-primary-100 px-4 py-2.5 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200"
+            href="bb_create_camp.html"
+          >
+            <span class="material-symbols-outlined">add_location</span>
+            <span class="text-sm font-medium">Create Camp</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_manage_camps.html"
+          >
+            <span class="material-symbols-outlined">event</span>
+            <span class="text-sm font-medium">Manage Camps</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_active_monitor.html"
+          >
+            <span class="material-symbols-outlined">monitor_heart</span>
+            <span class="text-sm font-medium">Active Monitor</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_emergency_alerts.html"
+          >
+            <span class="material-symbols-outlined">emergency</span>
+            <span class="text-sm font-medium">Emergency Alerts</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_raise_request.html"
+          >
+            <span class="material-symbols-outlined">campaign</span>
+            <span class="text-sm font-medium">Raise Request</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_inventory.html"
+          >
+            <span class="material-symbols-outlined">inventory</span>
+            <span class="text-sm font-medium">Inventory</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="bb_donors.html"
+          >
+            <span class="material-symbols-outlined">group</span>
+            <span class="text-sm font-medium">Donor Database</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto">
+          <button
+            class="w-full rounded-lg bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-colors"
+          >
+            Emergency Alert
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main id="main-content" class="main-content overflow-y-auto">
+        <div class="p-4 sm:p-6 lg:p-8">
+          <div class="mx-auto max-w-4xl">
+            <!-- Header -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div class="flex items-center gap-4">
+                <button
+                  id="menu-button"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                  <h1
+                    class="text-xl sm:text-2xl lg:text-3xl font-bold text-text-light dark:text-text-dark"
+                  >
+                    Create Blood Donation Camp
+                  </h1>
+                  <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                    Organize a new blood donation drive
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <button
+                  id="save-draft-btn"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm">save</span>
+                  Save Draft
+                </button>
+              </div>
+            </div>
+
+            <!-- Form -->
+            <form id="create-camp-form" class="space-y-8">
+              <!-- Basic Information -->
+              <section class="form-section rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                <h2 class="text-lg font-semibold text-text-light dark:text-text-dark mb-6">
+                  Basic Information
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Camp Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="campName"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="e.g., Community Center Blood Drive"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Organizer Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="organizerName"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="Your name or organization"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      rows="4"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="Describe the purpose and goals of this blood donation camp..."
+                    ></textarea>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Contact Phone *
+                    </label>
+                    <input
+                      type="tel"
+                      name="contactPhone"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Contact Email *
+                    </label>
+                    <input
+                      type="email"
+                      name="contactEmail"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="organizer@example.com"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <!-- Location Details -->
+              <section class="form-section rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                <h2 class="text-lg font-semibold text-text-light dark:text-text-dark mb-6">
+                  Location Details
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Venue Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="venueName"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="e.g., Downtown Community Center"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Street Address *
+                    </label>
+                    <input
+                      type="text"
+                      name="streetAddress"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="123 Main Street"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      City *
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="New York"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      State *
+                    </label>
+                    <select
+                      name="state"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    >
+                      <option value="">Select State</option>
+                      <option value="NY">New York</option>
+                      <option value="CA">California</option>
+                      <option value="TX">Texas</option>
+                      <option value="FL">Florida</option>
+                      <!-- Add more states as needed -->
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      ZIP Code *
+                    </label>
+                    <input
+                      type="text"
+                      name="zipCode"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="10001"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Parking Available
+                    </label>
+                    <select
+                      name="parking"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    >
+                      <option value="yes">Yes - Free parking</option>
+                      <option value="paid">Yes - Paid parking</option>
+                      <option value="limited">Limited parking</option>
+                      <option value="no">No parking available</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <!-- Map Preview -->
+                <div class="mt-6">
+                  <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                    Location Preview
+                  </label>
+                  <div id="map-preview" class="w-full h-64 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                    <div class="text-center">
+                      <span class="material-symbols-outlined text-4xl text-text-muted-light dark:text-text-muted-dark mb-2">map</span>
+                      <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Map will appear here</p>
+                      <button type="button" id="locate-btn" class="mt-2 text-sm text-primary-600 hover:underline">
+                        Use Current Location
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Schedule -->
+              <section class="form-section rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                <h2 class="text-lg font-semibold text-text-light dark:text-text-dark mb-6">
+                  Schedule
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Start Date *
+                    </label>
+                    <input
+                      type="date"
+                      name="startDate"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      End Date
+                    </label>
+                    <input
+                      type="date"
+                      name="endDate"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    />
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
+                      Leave blank for single-day event
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Start Time *
+                    </label>
+                    <input
+                      type="time"
+                      name="startTime"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      End Time *
+                    </label>
+                    <input
+                      type="time"
+                      name="endTime"
+                      required
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Registration Deadline
+                    </label>
+                    <input
+                      type="datetime-local"
+                      name="registrationDeadline"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    />
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
+                      When should registration close? Leave blank for no deadline.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Capacity & Requirements -->
+              <section class="form-section rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                <h2 class="text-lg font-semibold text-text-light dark:text-text-dark mb-6">
+                  Capacity & Requirements
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Maximum Donors *
+                    </label>
+                    <input
+                      type="number"
+                      name="maxDonors"
+                      required
+                      min="1"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Target Blood Units
+                    </label>
+                    <input
+                      type="number"
+                      name="targetUnits"
+                      min="1"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="45"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Minimum Age
+                    </label>
+                    <select
+                      name="minAge"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    >
+                      <option value="16">16 years</option>
+                      <option value="17">17 years</option>
+                      <option value="18" selected>18 years</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Weight Requirement
+                    </label>
+                    <select
+                      name="weightReq"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    >
+                      <option value="110">Minimum 110 lbs</option>
+                      <option value="120">Minimum 120 lbs</option>
+                      <option value="125">Minimum 125 lbs</option>
+                    </select>
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                      Preferred Blood Types
+                    </label>
+                    <div class="grid grid-cols-4 gap-3">
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="A+" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">A+</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="A-" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">A-</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="B+" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">B+</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="B-" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">B-</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="AB+" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">AB+</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="AB-" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">AB-</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="O+" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">O+</span>
+                      </label>
+                      <label class="flex items-center">
+                        <input type="checkbox" name="bloodTypes" value="O-" class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-2">
+                        <span class="text-sm">O-</span>
+                      </label>
+                    </div>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-2">
+                      Leave unchecked to accept all blood types
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Additional Settings -->
+              <section class="form-section rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                <h2 class="text-lg font-semibold text-text-light dark:text-text-dark mb-6">
+                  Additional Settings
+                </h2>
+                <div class="space-y-4">
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="walkInsAllowed"
+                      id="walkInsAllowed"
+                      class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-3"
+                    />
+                    <label for="walkInsAllowed" class="text-sm text-text-light dark:text-text-dark">
+                      Allow walk-in donors (no pre-registration required)
+                    </label>
+                  </div>
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="refreshmentsProvided"
+                      id="refreshmentsProvided"
+                      class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-3"
+                    />
+                    <label for="refreshmentsProvided" class="text-sm text-text-light dark:text-text-dark">
+                      Refreshments will be provided
+                    </label>
+                  </div>
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="publicEvent"
+                      id="publicEvent"
+                      class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-3"
+                      checked
+                    />
+                    <label for="publicEvent" class="text-sm text-text-light dark:text-text-dark">
+                      Make this a public event (visible to all users)
+                    </label>
+                  </div>
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="sendReminders"
+                      id="sendReminders"
+                      class="rounded border-slate-300 text-primary-600 focus:ring-primary-600 mr-3"
+                      checked
+                    />
+                    <label for="sendReminders" class="text-sm text-text-light dark:text-text-dark">
+                      Send reminder notifications to registered donors
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="mt-6">
+                  <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">
+                    Special Instructions
+                  </label>
+                  <textarea
+                    name="specialInstructions"
+                    rows="3"
+                    class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                    placeholder="Any special instructions for donors (e.g., bring ID, eat before coming, etc.)"
+                  ></textarea>
+                </div>
+              </section>
+
+              <!-- Form Actions -->
+              <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                <button
+                  type="submit"
+                  class="flex-1 sm:flex-none px-6 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors"
+                >
+                  Create Camp
+                </button>
+                <button
+                  type="button"
+                  id="preview-btn"
+                  class="flex-1 sm:flex-none px-6 py-3 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Preview
+                </button>
+                <button
+                  type="button"
+                  class="flex-1 sm:flex-none px-6 py-3 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-card-light dark:bg-card-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-semibold text-text-light dark:text-text-dark">Camp Preview</h3>
+          <button id="close-preview-modal" class="text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div id="preview-content">
+          <!-- Preview content will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Load transition system
+      const transitionScript = document.createElement('script');
+      transitionScript.src = 'transitions.js';
+      document.head.appendChild(transitionScript);
+    </script>
+    <script src="bb_create_camp.js"></script>
+  </body>
+</html>

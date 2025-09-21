@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Profile - Blood Donation Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#DC2626",
+                100: "#FEE2E2",
+                200: "#FECACA",
+                500: "#EF4444",
+                600: "#DC2626",
+                700: "#B91C1C",
+                900: "#7F1D1D",
+              },
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#0F172A",
+              "text-dark": "#F8FAFC",
+              "text-muted-light": "#64748B",
+              "text-muted-dark": "#94A3B8",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="transitions.css">
+    <link rel="stylesheet" href="profile.css">
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+
+      .sidebar-overlay {
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 256px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        width: 100%;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      .main-content.sidebar-open {
+        margin-left: 256px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content.sidebar-open {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+  >
+    <div class="flex h-screen w-full relative">
+      <!-- Mobile Sidebar Overlay -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50 sidebar-overlay z-40 md:hidden hidden"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-600 text-4xl"
+              >bloodtype</span
+            >
+            <h1 class="text-xl font-bold text-text-light dark:text-text-dark">
+              LiquidLove
+            </h1>
+          </div>
+          <button
+            id="close-sidebar"
+            class="flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <span
+              class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Sarah Miller"
+            class="size-12 rounded-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmJLuCi3VqouLiFSctDx-MXcMHNc5giLUkZMK99D_chjRqP0efr5aNWbVZruDB9ao6E1cjWkfq_YmiGVOsDBAcrTKjaUkWyLLxcvx2hOgnWXrFLwNN-n-_uVDfg_PRCWewCxDdtGptaigHsu0SYT5pmCK3Es0BywfN3XUdClrRtJdq25NOmOfTv7Pcgx0sU5RD6_fcb-QxldMvzpKt0o52T4gUFVoMsEiPMWEiba_NErMBuG6ZSxIAR8SaJPcx0qTE57ObnKN6Tg"
+          />
+          <div class="flex flex-col">
+            <h2
+              class="text-base font-semibold text-text-light dark:text-text-dark"
+            >
+              Sarah Miller
+            </h2>
+            <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+              Donor ID: 123456
+            </p>
+          </div>
+        </div>
+
+        <nav class="flex flex-col gap-2 flex-1">
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="dashboard.html"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg bg-primary-100 px-4 py-2.5 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200"
+            href="profile.html"
+          >
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-sm font-medium">Profile</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="history.html"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="text-sm font-medium">Donation History</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="nearby-camp.html"
+          >
+            <span class="material-symbols-outlined">location_on</span>
+            <span class="text-sm font-medium">Nearby Camps</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="requests.html"
+          >
+            <span class="material-symbols-outlined">bloodtype</span>
+            <span class="text-sm font-medium">Blood Requests</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="alerts.html"
+          >
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-sm font-medium">Alerts</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto">
+          <button
+            class="w-full rounded-lg bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-colors"
+          >
+            Schedule Donation
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main id="main-content" class="main-content overflow-y-auto">
+        <div class="p-4 sm:p-6 lg:p-8">
+          <div class="mx-auto max-w-4xl">
+            <!-- Header with Menu Button -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div class="flex items-center gap-4">
+                <button
+                  id="menu-button"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h1
+                  class="text-xl sm:text-2xl lg:text-3xl font-bold text-text-light dark:text-text-dark"
+                >
+                  My Profile
+                </h1>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <button
+                  id="edit-profile-btn"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm">edit</span>
+                  Edit Profile
+                </button>
+              </div>
+            </div>
+
+            <!-- Profile Header -->
+            <section class="rounded-2xl border border-slate-200 bg-card-light p-6 sm:p-8 dark:border-slate-700 dark:bg-card-dark mb-8">
+              <div class="flex flex-col sm:flex-row items-center gap-6">
+                <div class="relative">
+                  <img
+                    alt="Sarah Miller"
+                    class="size-24 sm:size-32 rounded-full object-cover border-4 border-primary-100 dark:border-primary-900/50"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmJLuCi3VqouLiFSctDx-MXcMHNc5giLUkZMK99D_chjRqP0efr5aNWbVZruDB9ao6E1cjWkfq_YmiGVOsDBAcrTKjaUkWyLLxcvx2hOgnWXrFLwNN-n-_uVDfg_PRCWewCxDdtGptaigHsu0SYT5pmCK3Es0BywfN3XUdClrRtJdq25NOmOfTv7Pcgx0sU5RD6_fcb-QxldMvzpKt0o52T4gUFVoMsEiPMWEiba_NErMBuG6ZSxIAR8SaJPcx0qTE57ObnKN6Tg"
+                  />
+                  <button class="absolute bottom-0 right-0 size-8 rounded-full bg-primary-600 text-white flex items-center justify-center hover:bg-primary-700 transition-colors">
+                    <span class="material-symbols-outlined text-sm">photo_camera</span>
+                  </button>
+                </div>
+                <div class="text-center sm:text-left flex-1">
+                  <h2 class="text-2xl sm:text-3xl font-bold text-text-light dark:text-text-dark mb-2">Sarah Miller</h2>
+                  <p class="text-lg text-text-muted-light dark:text-text-muted-dark mb-4">Donor ID: 123456</p>
+                  <div class="flex flex-wrap justify-center sm:justify-start gap-4">
+                    <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-primary-600 dark:text-primary-200">bloodtype</span>
+                      <span class="font-semibold text-text-light dark:text-text-dark">O+ Blood Type</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-green-600 dark:text-green-400">verified</span>
+                      <span class="font-semibold text-green-600 dark:text-green-400">Verified Donor</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Profile Information -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Personal Information -->
+              <div class="lg:col-span-2">
+                <div class="rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark mb-8">
+                  <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-text-light dark:text-text-dark">Personal Information</h3>
+                    <button class="text-sm text-primary-600 hover:underline">Edit</button>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Full Name</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">Sarah Miller</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Email</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">sarah.miller@email.com</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Phone</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">+1 (555) 123-4567</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Date of Birth</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">March 15, 1990</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Gender</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">Female</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Blood Type</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">O+</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark mb-8">
+                  <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-text-light dark:text-text-dark">Address Information</h3>
+                    <button class="text-sm text-primary-600 hover:underline">Edit</button>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="sm:col-span-2">
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Street Address</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">123 Main Street, Apt 4B</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">City</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">New York</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">State</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">NY</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">ZIP Code</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">10001</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Country</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">United States</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                  <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-text-light dark:text-text-dark">Emergency Contact</h3>
+                    <button class="text-sm text-primary-600 hover:underline">Edit</button>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Contact Name</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">John Miller</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Relationship</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">Spouse</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Phone Number</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">+1 (555) 987-6543</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-2">Email</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">john.miller@email.com</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sidebar Information -->
+              <div class="space-y-8">
+                <!-- Donation Stats -->
+                <div class="rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-6">Donation Statistics</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Total Donations</span>
+                      <span class="font-semibold text-text-light dark:text-text-dark">5</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Lives Saved</span>
+                      <span class="font-semibold text-primary-600 dark:text-primary-200">15</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-text-muted-light dark:text-text-muted-dark">First Donation</span>
+                      <span class="font-semibold text-text-light dark:text-text-dark">Jan 2023</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Last Donation</span>
+                      <span class="font-semibold text-text-light dark:text-text-dark">Dec 2023</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Achievements -->
+                <div class="rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                  <h3 class="text-lg font-semibold text-text-light dark:text-text-dark mb-6">Achievements</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                      <div class="size-10 rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">star</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-text-light dark:text-text-dark">First Time Donor</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Completed first donation</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="size-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">favorite</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-text-light dark:text-text-dark">Life Saver</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Saved 10+ lives</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="size-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-green-600 dark:text-green-400">verified</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-text-light dark:text-text-dark">Regular Donor</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark">5+ donations completed</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Medical Information -->
+                <div class="rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                  <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-text-light dark:text-text-dark">Medical Information</h3>
+                    <button class="text-sm text-primary-600 hover:underline">Update</button>
+                  </div>
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-1">Weight</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">140 lbs</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-1">Height</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">5'6"</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-1">Allergies</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">None</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-text-muted-light dark:text-text-muted-dark mb-1">Medications</label>
+                      <p class="text-text-light dark:text-text-dark font-medium">None</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Load transition system
+      const transitionScript = document.createElement('script');
+      transitionScript.src = 'transitions.js';
+      document.head.appendChild(transitionScript);
+    </script>
+    <script src="profile.js"></script>
+  </body>
+</html>

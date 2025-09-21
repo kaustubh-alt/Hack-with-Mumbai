@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Blood Requests - Blood Donation Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#DC2626",
+                100: "#FEE2E2",
+                200: "#FECACA",
+                500: "#EF4444",
+                600: "#DC2626",
+                700: "#B91C1C",
+                900: "#7F1D1D",
+              },
+              "background-light": "#F8FAFC",
+              "background-dark": "#0F172A",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E293B",
+              "text-light": "#0F172A",
+              "text-dark": "#F8FAFC",
+              "text-muted-light": "#64748B",
+              "text-muted-dark": "#94A3B8",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="transitions.css">
+    <link rel="stylesheet" href="requests.css">
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+
+      .sidebar-overlay {
+        backdrop-filter: blur(4px);
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 256px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        width: 100%;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      .main-content.sidebar-open {
+        margin-left: 256px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content.sidebar-open {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+  >
+    <div class="flex h-screen w-full relative">
+      <!-- Mobile Sidebar Overlay -->
+      <div
+        id="sidebar-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50 sidebar-overlay z-40 md:hidden hidden"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-600 text-4xl"
+              >bloodtype</span
+            >
+            <h1 class="text-xl font-bold text-text-light dark:text-text-dark">
+              LiquidLove
+            </h1>
+          </div>
+          <button
+            id="close-sidebar"
+            class="flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <span
+              class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <img
+            alt="Sarah Miller"
+            class="size-12 rounded-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmJLuCi3VqouLiFSctDx-MXcMHNc5giLUkZMK99D_chjRqP0efr5aNWbVZruDB9ao6E1cjWkfq_YmiGVOsDBAcrTKjaUkWyLLxcvx2hOgnWXrFLwNN-n-_uVDfg_PRCWewCxDdtGptaigHsu0SYT5pmCK3Es0BywfN3XUdClrRtJdq25NOmOfTv7Pcgx0sU5RD6_fcb-QxldMvzpKt0o52T4gUFVoMsEiPMWEiba_NErMBuG6ZSxIAR8SaJPcx0qTE57ObnKN6Tg"
+          />
+          <div class="flex flex-col">
+            <h2
+              class="text-base font-semibold text-text-light dark:text-text-dark"
+            >
+              Sarah Miller
+            </h2>
+            <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+              Donor ID: 123456
+            </p>
+          </div>
+        </div>
+
+        <nav class="flex flex-col gap-2 flex-1">
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="dashboard.html"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="profile.html"
+          >
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-sm font-medium">Profile</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="history.html"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="text-sm font-medium">Donation History</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="nearby-camp.html"
+          >
+            <span class="material-symbols-outlined">location_on</span>
+            <span class="text-sm font-medium">Nearby Camps</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg bg-primary-100 px-4 py-2.5 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200"
+            href="requests.html"
+          >
+            <span class="material-symbols-outlined">bloodtype</span>
+            <span class="text-sm font-medium">Blood Requests</span>
+          </a>
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-text-muted-light hover:bg-slate-100 dark:text-text-muted-dark dark:hover:bg-slate-800"
+            href="alerts.html"
+          >
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-sm font-medium">Alerts</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto">
+          <button
+            class="w-full rounded-lg bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-colors"
+          >
+            Schedule Donation
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main id="main-content" class="main-content overflow-y-auto">
+        <div class="p-4 sm:p-6 lg:p-8">
+          <div class="mx-auto max-w-7xl">
+            <!-- Header with Menu Button -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div class="flex items-center gap-4">
+                <button
+                  id="menu-button"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h1
+                  class="text-xl sm:text-2xl lg:text-3xl font-bold text-text-light dark:text-text-dark"
+                >
+                  Blood Requests
+                </h1>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <button
+                  id="create-request-btn"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors"
+                >
+                  <span class="material-symbols-outlined text-sm">add</span>
+                  Create Request
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-red-600 dark:text-red-400">priority_high</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Critical Requests</p>
+                    <p class="text-lg sm:text-xl font-bold text-red-600 dark:text-red-400">3</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Immediate attention</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">schedule</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Urgent Requests</p>
+                    <p class="text-lg sm:text-xl font-bold text-yellow-600 dark:text-yellow-400">7</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Within 24 hours</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Fulfilled Today</p>
+                    <p class="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400">12</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Successfully matched</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex items-center gap-4">
+                  <div class="flex size-10 sm:size-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0">
+                    <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">bloodtype</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Your Matches</p>
+                    <p class="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">5</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Compatible with O+</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Filters and Search -->
+            <section class="mb-8">
+              <div class="rounded-2xl border border-slate-200 bg-card-light p-4 sm:p-6 dark:border-slate-700 dark:bg-card-dark">
+                <div class="flex flex-wrap items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Filter by:</span>
+                    <select id="urgency-filter" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-sm">
+                      <option value="">All Urgency</option>
+                      <option value="critical">Critical</option>
+                      <option value="urgent">Urgent</option>
+                      <option value="normal">Normal</option>
+                    </select>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <select id="blood-type-filter" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-sm">
+                      <option value="">All Blood Types</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                    </select>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <select id="location-filter" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2 text-sm">
+                      <option value="">All Locations</option>
+                      <option value="nearby">Within 10 miles</option>
+                      <option value="city">Same city</option>
+                      <option value="state">Same state</option>
+                    </select>
+                  </div>
+                  <div class="flex-1 min-w-64">
+                    <div class="relative">
+                      <input
+                        id="search-input"
+                        type="text"
+                        placeholder="Search by hospital or patient info..."
+                        class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark focus:ring-primary-600 focus:border-primary-600"
+                      />
+                      <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark">search</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Blood Requests List -->
+            <section>
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-text-light dark:text-text-dark">Active Blood Requests</h2>
+                <div class="flex items-center gap-2">
+                  <button id="list-view-btn" class="p-2 rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-900/50 dark:text-primary-200">
+                    <span class="material-symbols-outlined">view_list</span>
+                  </button>
+                  <button id="map-view-btn" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-text-muted-light dark:text-text-muted-dark">
+                    <span class="material-symbols-outlined">map</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="requests-list" class="space-y-4">
+                <!-- Critical Request -->
+                <div class="request-card rounded-2xl border-2 border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                      <div class="flex size-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50 flex-shrink-0">
+                        <span class="material-symbols-outlined text-red-600 dark:text-red-400">emergency</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                          <h3 class="font-semibold text-text-light dark:text-text-dark">Emergency General Hospital</h3>
+                          <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900/50 dark:text-red-300">Critical</span>
+                          <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">Compatible</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-text-muted-light dark:text-text-muted-dark mb-3">
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">bloodtype</span>
+                            <span class="font-medium text-red-600 dark:text-red-400">O- - 4 units</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">location_on</span>
+                            <span>1.5 miles away</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">schedule</span>
+                            <span class="text-red-600 dark:text-red-400 font-medium">Needed in 2 hours</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">person</span>
+                            <span>Emergency surgery patient</span>
+                          </div>
+                        </div>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                          <strong>Details:</strong> Patient requires immediate blood transfusion for emergency surgery. Multiple trauma case.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <button class="respond-btn px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">volunteer_activism</span>
+                        Respond Now
+                      </button>
+                      <button class="contact-btn px-4 py-2 rounded-lg border border-red-200 dark:border-red-700 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">call</span>
+                        Contact
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Urgent Request -->
+                <div class="request-card rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                      <div class="flex size-12 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex-shrink-0">
+                        <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">schedule</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                          <h3 class="font-semibold text-text-light dark:text-text-dark">St. Mary's Medical Center</h3>
+                          <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300">Urgent</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-text-muted-light dark:text-text-muted-dark mb-3">
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">bloodtype</span>
+                            <span class="font-medium">A+ - 2 units</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">location_on</span>
+                            <span>2.3 miles away</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">schedule</span>
+                            <span>Needed in 6 hours</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">person</span>
+                            <span>Scheduled surgery</span>
+                          </div>
+                        </div>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                          <strong>Details:</strong> Patient scheduled for cardiac surgery tomorrow morning. Pre-operative blood preparation required.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <button class="respond-btn px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">volunteer_activism</span>
+                        Respond
+                      </button>
+                      <button class="contact-btn px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">call</span>
+                        Contact
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Normal Request -->
+                <div class="request-card rounded-2xl border border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark">
+                  <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                      <div class="flex size-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 flex-shrink-0">
+                        <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">bloodtype</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                          <h3 class="font-semibold text-text-light dark:text-text-dark">Children's Hospital</h3>
+                          <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/50 dark:text-green-300">Normal</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-text-muted-light dark:text-text-muted-dark mb-3">
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">bloodtype</span>
+                            <span class="font-medium">B- - 1 unit</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">location_on</span>
+                            <span>4.1 miles away</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">schedule</span>
+                            <span>Needed in 12 hours</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">person</span>
+                            <span>Pediatric patient</span>
+                          </div>
+                        </div>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                          <strong>Details:</strong> Young patient requires blood transfusion for ongoing treatment. Routine but important care.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <button class="respond-btn px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">volunteer_activism</span>
+                        Respond
+                      </button>
+                      <button class="contact-btn px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-sm mr-1">call</span>
+                        Contact
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Load More Button -->
+              <div class="mt-8 text-center">
+                <button id="load-more-btn" class="px-6 py-3 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-medium text-text-light dark:text-text-dark hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  Load More Requests
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Create Request Modal -->
+    <div id="create-request-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-card-light dark:bg-card-dark rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-semibold text-text-light dark:text-text-dark">Create Blood Request</h3>
+          <button id="close-create-modal" class="text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form id="create-request-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Hospital/Medical Center</label>
+              <input type="text" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2" placeholder="Enter hospital name">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Blood Type Required</label>
+              <select required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2">
+                <option value="">Select Blood Type</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Units Required</label>
+              <input type="number" min="1" max="10" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2" placeholder="Number of units">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Urgency Level</label>
+              <select required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2">
+                <option value="">Select Urgency</option>
+                <option value="critical">Critical (0-2 hours)</option>
+                <option value="urgent">Urgent (2-24 hours)</option>
+                <option value="normal">Normal (24+ hours)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Contact Phone</label>
+              <input type="tel" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2" placeholder="Hospital contact number">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Deadline</label>
+              <input type="datetime-local" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Patient Information</label>
+            <textarea rows="3" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2" placeholder="Brief description of patient condition and reason for blood requirement"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light dark:text-text-dark mb-2">Hospital Address</label>
+            <textarea rows="2" required class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-card-light dark:bg-card-dark px-3 py-2" placeholder="Complete hospital address"></textarea>
+          </div>
+          <div class="flex gap-3 pt-4">
+            <button type="submit" class="flex-1 px-4 py-2 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors">
+              Create Request
+            </button>
+            <button type="button" id="cancel-create-request" class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-text-light dark:text-text-dark font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Response Modal -->
+    <div id="response-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-card-light dark:bg-card-dark rounded-2xl p-6 w-full max-w-md">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-text-light dark:text-text-dark">Respond to Request</h3>
+          <button id="close-response-modal" class="text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div id="response-modal-content">
+          <!-- Modal content will be dynamically inserted -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Load transition system
+      const transitionScript = document.createElement('script');
+      transitionScript.src = 'transitions.js';
+      document.head.appendChild(transitionScript);
+    </script>
+    <script src="requests.js"></script>
+  </body>
+</html>

@@ -1,0 +1,351 @@
+/* Raise Request Page Specific Styles */
+
+/* Form section animations */
+.form-section {
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.form-section.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Form field animations */
+.form-field {
+  transition: all 0.2s ease;
+}
+
+.form-field:focus-within {
+  transform: translateY(-1px);
+}
+
+/* Input field styles */
+input:focus,
+select:focus,
+textarea:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+/* Request type specific styling */
+select[name="requestType"] option[value="emergency"] {
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+}
+
+select[name="requestType"] option[value="urgent"] {
+  background: rgba(245, 158, 11, 0.1);
+  color: #D97706;
+}
+
+/* Blood type selector styling */
+select[name="bloodType"] {
+  font-weight: 500;
+}
+
+select[name="bloodType"] option {
+  padding: 0.5rem;
+}
+
+/* Checkbox styling */
+input[type="checkbox"]:checked {
+  background-color: #DC2626;
+  border-color: #DC2626;
+}
+
+input[type="checkbox"]:focus {
+  ring-color: #DC2626;
+}
+
+/* Preview section */
+#request-preview {
+  transition: all 0.3s ease;
+  min-height: 8rem;
+}
+
+#request-preview.populated {
+  border-color: #DC2626;
+  background: rgba(220, 38, 38, 0.05);
+}
+
+/* Button animations */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Save draft button */
+#save-draft-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+#save-draft-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+#save-draft-btn:hover::before {
+  left: 100%;
+}
+
+/* Emergency send button */
+button[type="submit"] {
+  position: relative;
+  overflow: hidden;
+}
+
+button[type="submit"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+button[type="submit"]:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Form validation styles */
+.field-error {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-message {
+  color: #EF4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.field-success {
+  border-color: #10B981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Priority indicators */
+.priority-emergency {
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  animation: pulse-emergency 1s infinite;
+}
+
+.priority-urgent {
+  background: rgba(245, 158, 11, 0.1);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.priority-routine {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563EB;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+@keyframes pulse-emergency {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Modal animations */
+.modal-overlay {
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.modal-content {
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+  transform: scale(1);
+}
+
+/* Loading states */
+.form-loading {
+  position: relative;
+}
+
+.form-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+}
+
+.dark .form-loading::after {
+  background: rgba(30, 41, 59, 0.8);
+}
+
+/* Character counter */
+.char-counter {
+  font-size: 0.75rem;
+  color: #64748B;
+  text-align: right;
+  margin-top: 0.25rem;
+}
+
+.char-counter.warning {
+  color: #D97706;
+}
+
+.char-counter.error {
+  color: #DC2626;
+}
+
+/* Notification methods grid */
+.notification-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-section:hover {
+    box-shadow: none;
+  }
+  
+  input:focus,
+  select:focus,
+  textarea:focus {
+    transform: none;
+  }
+  
+  button:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .form-section,
+  .form-field,
+  input,
+  select,
+  textarea,
+  button {
+    animation: none;
+    transition: none;
+  }
+  
+  .priority-emergency {
+    animation: none;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.form-section:focus-within {
+  outline: 2px solid #DC2626;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .sidebar,
+  #menu-button,
+  #save-draft-btn,
+  .form-actions {
+    display: none !important;
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+  }
+  
+  .form-section {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .form-section {
+    border: 2px solid;
+  }
+  
+  input,
+  select,
+  textarea {
+    border: 2px solid;
+  }
+}
+
+/* Auto-save indicator */
+.auto-save-indicator {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #10B981;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.auto-save-indicator.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Required field indicator */
+.required-field::after {
+  content: ' *';
+  color: #EF4444;
+}
+
+/* Smooth scrolling for form navigation */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

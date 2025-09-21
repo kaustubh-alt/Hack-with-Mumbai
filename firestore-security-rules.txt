@@ -1,0 +1,186 @@
+// Enhanced Firestore Security Rules for Blood Bank Management System
+// These rules should be applied in the Firebase Console
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.admin == true;
+    }
+    
+    function isBloodBank() {
+      return isAuthenticated() && 
+             request.auth.token.role == 'blood_bank';
+    }
+    
+    function isUser() {
+      return isAuthenticated() && 
+             request.auth.token.role == 'user';
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && 
+             request.auth.uid == userId;
+    }
+    
+    function validateUserData(data) {
+      return data.keys().hasAll(['firstName', 'lastName', 'phone', 'bloodGroup', 'role']) &&
+             data.firstName is string && data.firstName.size() > 0 &&
+             data.lastName is string && data.lastName.size() > 0 &&
+             data.phone is string && data.phone.size() > 0 &&
+             data.bloodGroup in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] &&
+             data.role == 'user';
+    }
+    
+    function validateBloodBankData(data) {
+      return data.keys().hasAll(['hospitalName', 'licenseNumber', 'phone', 'email', 'role']) &&
+             data.hospitalName is string && data.hospitalName.size() > 0 &&
+             data.licenseNumber is string && data.licenseNumber.size() > 0 &&
+             data.phone is string && data.phone.size() > 0 &&
+             data.email is string && data.email.matches('.*@.*\\..*') &&
+             data.role == 'blood_bank';
+    }
+    
+    function onlyUpdatingAllowedUserFields() {
+      let allowedFields = ['phone', 'email', 'address', 'contactPreferences', 'updatedAt'];
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(allowedFields);
+    }
+    
+    function onlyUpdatingAllowedBloodBankFields() {
+      let allowedFields = ['phone', 'email', 'address', 'dailyCapacity', 'updatedAt'];
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(allowedFields);
+    }
+
+    // Users collection - for unified authentication
+    match /users/{userId} {
+      // Allow users to read their own data
+      allow read: if isOwner(userId);
+      
+      // Allow users to create their own account during registration
+      allow create: if isOwner(userId) && 
+                       (validateUserData(request.resource.data) || 
+                        request.resource.data.role == 'blood_bank');
+      
+      // Allow users to update their own allowed fields
+      allow update: if isOwner(userId) && onlyUpdatingAllowedUserFields();
+      
+      // Allow admins full access
+      allow read, write: if isAdmin();
+    }
+    
+    // Donors collection - detailed donor information
+    match /donors/{donorId} {
+      // Allow read access to authenticated admin users and blood banks
+      allow read: if isAdmin() || isBloodBank();
+      
+      // Allow write access to authenticated admin users
+      allow write: if isAdmin() && validateUserData(request.resource.data);
+      
+      // Allow donors to read their own data
+      allow read: if isOwner(donorId);
+      
+      // Allow donors to update their own contact preferences
+      allow update: if isOwner(donorId) && onlyUpdatingAllowedUserFields();
+    }
+    
+    // Blood Banks collection - healthcare provider information
+    match /blood_banks/{bloodBankId} {
+      // Allow blood banks to read their own data
+      allow read: if isOwner(bloodBankId);
+      
+      // Allow blood banks to create their own account during registration
+      allow create: if isOwner(bloodBankId) && validateBloodBankData(request.resource.data);
+      
+      // Allow blood banks to update their own allowed fields
+      allow update: if isOwner(bloodBankId) && onlyUpdatingAllowedBloodBankFields();
+      
+      // Allow admins full access
+      allow read, write: if isAdmin();
+      
+      // Allow other blood banks to read basic info (for collaboration)
+      allow read: if isBloodBank();
+    }
+    
+    // Blood requests collection
+    match /bloodRequests/{requestId} {
+      // Allow blood banks to create and manage their own requests
+      allow create: if isBloodBank() && request.resource.data.createdBy == request.auth.uid;
+      allow update: if isBloodBank() && resource.data.createdBy == request.auth.uid;
+      
+      // Allow all authenticated users to read active requests
+      allow read: if isAuthenticated() && resource.data.status == 'active';
+      
+      // Allow admins full access
+      allow read, write: if isAdmin();
+    }
+    
+    // Donation history collection
+    match /donations/{donationId} {
+      // Allow blood banks to create donation records
+      allow create: if isBloodBank();
+      
+      // Allow blood banks and admins to read/write
+      allow read, write: if isAdmin() || isBloodBank();
+      
+      // Allow donors to read their own donation history
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.donorId;
+    }
+    
+    // Blood inventory collection
+    match /inventory/{inventoryId} {
+      // Allow blood banks to manage their own inventory
+      allow read, write: if isBloodBank() && resource.data.bloodBankId == request.auth.uid;
+      
+      // Allow admins full access
+      allow read, write: if isAdmin();
+      
+      // Allow read access for inventory levels (for matching)
+      allow read: if isAuthenticated();
+    }
+    
+    // Camps collection
+    match /camps/{campId} {
+      // Public read access for camp information
+      allow read: if true;
+      
+      // Allow blood banks to create and manage their own camps
+      allow create: if isBloodBank() && request.resource.data.createdBy == request.auth.uid;
+      allow update: if isBloodBank() && resource.data.createdBy == request.auth.uid;
+      
+      // Allow admins full access
+      allow read, write: if isAdmin();
+    }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      // Allow users to read their own notifications
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      
+      // Allow blood banks and admins to create notifications
+      allow create: if isBloodBank() || isAdmin();
+      
+      // Allow admins full access
+      allow read, write: if isAdmin();
+    }
+    
+    // System logs collection (admin only)
+    match /system_logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Analytics collection (admin and blood bank read access)
+    match /analytics/{analyticsId} {
+      allow read: if isAdmin() || isBloodBank();
+      allow write: if isAdmin();
+    }
+  }
+}

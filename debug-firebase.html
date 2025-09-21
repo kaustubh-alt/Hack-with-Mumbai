@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Firebase Debug Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="material-symbols-outlined text-red-600 text-3xl">bug_report</span>
+                <h1 class="text-2xl font-bold text-gray-900">Firebase Debug Tool</h1>
+            </div>
+            
+            <!-- Firebase Status -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Firebase Initialization Status</h2>
+                <div id="firebase-status" class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <div id="app-status" class="w-3 h-3 rounded-full bg-gray-300"></div>
+                        <span>Firebase App</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div id="auth-status" class="w-3 h-3 rounded-full bg-gray-300"></div>
+                        <span>Firebase Auth</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div id="firestore-status" class="w-3 h-3 rounded-full bg-gray-300"></div>
+                        <span>Firestore Database</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Test -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Configuration Test</h2>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <pre id="config-display" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                </div>
+                <button id="test-config" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    Test Configuration
+                </button>
+            </div>
+
+            <!-- Quick Registration Test -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Registration Test</h2>
+                <form id="quick-test-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="email" placeholder="test@example.com" name="email" required class="px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="password" placeholder="password123" name="password" required class="px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="text" placeholder="John" name="firstName" required class="px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="text" placeholder="Doe" name="lastName" required class="px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <button type="submit" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        Test Registration
+                    </button>
+                </form>
+            </div>
+
+            <!-- Console Output -->
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Console Output</h2>
+                <div id="console-output" class="bg-black text-green-400 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm">
+                    <div class="text-yellow-400">Firebase Debug Console - Ready</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Enhanced console capture
+        const consoleOutput = document.getElementById('console-output');
+        
+        function addToConsole(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const colorClass = {
+                log: 'text-green-400',
+                error: 'text-red-400',
+                warn: 'text-yellow-400',
+                info: 'text-blue-400'
+            }[type] || 'text-green-400';
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = colorClass;
+            logEntry.innerHTML = `<span class="text-gray-500">[${timestamp}]</span> ${message}`;
+            consoleOutput.appendChild(logEntry);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        // Override console methods
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+        
+        console.log = (...args) => {
+            originalConsole.log(...args);
+            addToConsole(args.join(' '), 'log');
+        };
+        
+        console.error = (...args) => {
+            originalConsole.error(...args);
+            addToConsole(args.join(' '), 'error');
+        };
+        
+        console.warn = (...args) => {
+            originalConsole.warn(...args);
+            addToConsole(args.join(' '), 'warn');
+        };
+        
+        console.info = (...args) => {
+            originalConsole.info(...args);
+            addToConsole(args.join(' '), 'info');
+        };
+
+        // Test Firebase configuration
+        document.getElementById('test-config').addEventListener('click', async () => {
+            console.log('🧪 Testing Firebase configuration...');
+            
+            try {
+                const { app, auth, db, firebaseConfig } = await import('./firebase-config.js');
+                
+                // Display configuration
+                document.getElementById('config-display').textContent = JSON.stringify(firebaseConfig, null, 2);
+                
+                // Update status indicators
+                document.getElementById('app-status').className = app ? 'w-3 h-3 rounded-full bg-green-500' : 'w-3 h-3 rounded-full bg-red-500';
+                document.getElementById('auth-status').className = auth ? 'w-3 h-3 rounded-full bg-green-500' : 'w-3 h-3 rounded-full bg-red-500';
+                document.getElementById('firestore-status').className = db ? 'w-3 h-3 rounded-full bg-green-500' : 'w-3 h-3 rounded-full bg-red-500';
+                
+                console.log('✅ Firebase configuration test completed');
+                
+            } catch (error) {
+                console.error('❌ Firebase configuration test failed:', error);
+            }
+        });
+
+        // Quick registration test
+        document.getElementById('quick-test-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            console.log('🧪 Testing quick registration...');
+            
+            try {
+                const { auth, db } = await import('./firebase-config.js');
+                const { createUserWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                const { doc, setDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const password = formData.get('password');
+                const firstName = formData.get('firstName');
+                const lastName = formData.get('lastName');
+                
+                console.log(`📧 Testing with email: ${email}`);
+                
+                // Create user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                console.log(`✅ User created: ${user.uid}`);
+                
+                // Save to Firestore
+                await setDoc(doc(db, 'users', user.uid), {
+                    firstName,
+                    lastName,
+                    email,
+                    role: 'user',
+                    createdAt: serverTimestamp()
+                });
+                
+                console.log('✅ User data saved to Firestore');
+                console.log('🎉 Quick registration test successful!');
+                
+                // Clean up test user (in production, you might want to keep this)
+                await user.delete();
+                console.log('🧹 Test user cleaned up');
+                
+            } catch (error) {
+                console.error('❌ Quick registration test failed:', error);
+            }
+        });
+
+        // Initialize Firebase test on page load
+        setTimeout(() => {
+            document.getElementById('test-config').click();
+        }, 1000);
+    </script>
+</body>
+</html>

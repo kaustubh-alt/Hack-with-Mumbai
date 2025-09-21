@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>LiquidLove - Mobile Registration</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ec1337",
+              "background-light": "#f8f6f6",
+              "background-dark": "#221013",
+              "surface-light": "#ffffff",
+              "surface-dark": "#2c1518",
+              "text-light": "#181112",
+              "text-dark": "#f8f6f6",
+              "muted-light": "#896168",
+              "muted-dark": "#a3898d",
+              "border-light": "#e6dbdd",
+              "border-dark": "#4a2a2f",
+            },
+            fontFamily: {
+              display: ["Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+
+      .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23896168' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+        appearance: none;
+      }
+      .dark .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a3898d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      }
+
+      /* Loading spinner */
+      .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #ffffff;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Snackbar styles */
+      .snackbar {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        max-width: 400px;
+        padding: 16px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .snackbar.show {
+        transform: translateX(0);
+      }
+
+      .snackbar.success {
+        background-color: #10b981;
+      }
+
+      .snackbar.error {
+        background-color: #ef4444;
+      }
+
+      .snackbar.info {
+        background-color: #3b82f6;
+      }
+
+      /* Form validation styles */
+      .field-error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+      }
+
+      .field-success {
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+      }
+
+      /* OTP input styling */
+      .otp-input {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5rem;
+        font-family: "Courier New", monospace;
+      }
+
+      /* Resend timer styling */
+      .resend-timer {
+        color: #6b7280;
+        font-size: 0.875rem;
+      }
+
+      /* Phone input with country code */
+      .phone-input-container {
+        position: relative;
+      }
+
+      .country-code {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-weight: 500;
+        pointer-events: none;
+      }
+
+      .phone-input {
+        padding-left: 60px;
+      }
+
+      /* Smooth transitions */
+      .transition-all {
+        transition: all 0.3s ease;
+      }
+
+      /* Step indicator */
+      .step-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .step-number {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .step-active .step-number {
+        background-color: #ec1337;
+        color: white;
+      }
+
+      .step-inactive .step-number {
+        background-color: #e5e7eb;
+        color: #6b7280;
+      }
+
+      .step-completed .step-number {
+        background-color: #10b981;
+        color: white;
+      }
+
+      .step-line {
+        width: 60px;
+        height: 2px;
+        background-color: #e5e7eb;
+        margin: 0 1rem;
+      }
+
+      .step-line.completed {
+        background-color: #10b981;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark"
+  >
+    <link rel="stylesheet" href="transitions.css" />
+
+    <div class="flex flex-col min-h-screen">
+      <main
+        class="flex-grow flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+      >
+        <div class="flex items-center gap-3 mb-8">
+          <span class="material-symbols-outlined text-primary text-4xl"
+            >bloodtype</span
+          >
+          <h1 class="text-3xl font-bold">LiquidLove</h1>
+        </div>
+
+        <div
+          class="w-full max-w-lg space-y-8 bg-surface-light dark:bg-surface-dark p-8 sm:p-10 rounded-xl shadow-lg"
+        >
+          <!-- Step Indicator -->
+          <div class="step-indicator">
+            <div id="step-1" class="step step-active">
+              <div class="step-number">1</div>
+              <span class="text-sm font-medium">Phone</span>
+            </div>
+            <div class="step-line" id="step-line-1"></div>
+            <div id="step-2" class="step step-inactive">
+              <div class="step-number">2</div>
+              <span class="text-sm font-medium">Verify</span>
+            </div>
+            <div class="step-line" id="step-line-2"></div>
+            <div id="step-3" class="step step-inactive">
+              <div class="step-number">3</div>
+              <span class="text-sm font-medium">Complete</span>
+            </div>
+          </div>
+
+          <div>
+            <h2
+              class="text-center text-3xl font-extrabold text-text-light dark:text-text-dark"
+            >
+              Create an account
+            </h2>
+            <p
+              class="mt-2 text-center text-sm text-muted-light dark:text-muted-dark"
+            >
+              Join our community of life-savers with your mobile number.
+            </p>
+          </div>
+
+          <!-- Phone Number Registration Form -->
+          <div id="phone-step" class="space-y-6">
+            <form id="phone-form" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-text-light dark:text-text-dark pb-2"
+                    >First Name *</label
+                  >
+                  <input
+                    class="w-full px-4 py-3 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg focus:ring-primary focus:border-primary placeholder-muted-light dark:placeholder-muted-dark"
+                    id="first-name"
+                    name="firstName"
+                    placeholder="John"
+                    required
+                    type="text"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-text-light dark:text-text-dark pb-2"
+                    >Last Name *</label
+                  >
+                  <input
+                    class="w-full px-4 py-3 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg focus:ring-primary focus:border-primary placeholder-muted-light dark:placeholder-muted-dark"
+                    id="last-name"
+                    name="lastName"
+                    placeholder="Doe"
+                    required
+                    type="text"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium text-text-light dark:text-text-dark pb-2"
+                  >Mobile Number *</label
+                >
+                <div class="phone-input-container">
+                  <span class="country-code"></span>
+                  <input
+                    class="phone-input w-full px-4 py-3 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg focus:ring-primary focus:border-primary placeholder-muted-light dark:placeholder-muted-dark"
+                    id="phone-number"
+                    name="phoneNumber"
+                    placeholder="0000000000"
+                    required
+                    type="tel"
+                    maxlength="10"
+                  />
+                </div>
+                <p class="text-xs text-muted-light dark:text-muted-dark mt-1">
+                  We'll send you a verification code via SMS
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-text-light dark:text-text-dark pb-2"
+                    >Date of Birth *</label
+                  >
+                  <input
+                    class="w-full px-4 py-3 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg focus:ring-primary focus:border-primary text-muted-light dark:text-muted-dark"
+                    id="dob"
+                    name="dob"
+                    required
+                    type="date"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-text-light dark:text-text-dark pb-2"
+                    >Blood Group *</label
+                  >
+                  <select
+                    class="w-full px-4 py-3 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg focus:ring-primary focus:border-primary form-select"
+                    id="blood-group"
+                    name="bloodGroup"
+                    required
+                  >
+                    <option disabled selected>Select Blood Group</option>
+                    <option>A+</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B-</option>
+                    <option>AB+</option>
+                    <option>AB-</option>
+                    <option>O+</option>
+                    <option>O-</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium text-text-light dark:text-text-dark pb-2"
+                  >Gender *</label
+                >
+                <select
+                  class="w-full px-4 py-3 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg focus:ring-primary focus:border-primary form-select"
+                  id="gender"
+                  name="gender"
+                  required
+                >
+                  <option disabled selected>Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div>
+                <button
+                  id="send-otp-btn"
+                  class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  type="submit"
+                >
+                  <span id="send-otp-text">Send Verification Code</span>
+                  <span id="send-otp-loading" class="hidden ml-2">
+                    <div class="loading-spinner"></div>
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- OTP Verification Step -->
+          <div id="otp-step" class="space-y-6 hidden">
+            <div class="text-center">
+              <h3
+                class="text-xl font-bold text-text-light dark:text-text-dark mb-2"
+              >
+                Verify Your Phone Number
+              </h3>
+              <p class="text-sm text-muted-light dark:text-muted-dark">
+                We've sent a 6-digit verification code to
+              </p>
+              <p
+                id="phone-display"
+                class="text-sm font-medium text-text-light dark:text-text-dark mt-1"
+              ></p>
+            </div>
+
+            <form id="otp-form" class="space-y-6">
+              <div>
+                <label
+                  class="block text-sm font-medium text-text-light dark:text-text-dark pb-2 text-center"
+                >
+                  Verification Code
+                </label>
+                <input
+                  type="text"
+                  id="otp-input"
+                  name="otpCode"
+                  maxlength="6"
+                  class="otp-input w-full px-4 py-3 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg focus:ring-primary focus:border-primary placeholder-muted-light dark:placeholder-muted-dark"
+                  placeholder="000000"
+                  autocomplete="one-time-code"
+                  inputmode="numeric"
+                  pattern="[0-9]{6}"
+                  required
+                />
+                <p
+                  class="text-xs text-muted-light dark:text-muted-dark mt-1 text-center"
+                >
+                  Enter the 6-digit code sent to your phone
+                </p>
+              </div>
+
+              <div>
+                <button
+                  id="verify-otp-btn"
+                  class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  type="submit"
+                >
+                  <span id="verify-otp-text">Verify Code</span>
+                  <span id="verify-otp-loading" class="hidden ml-2">
+                    <div class="loading-spinner"></div>
+                  </span>
+                </button>
+              </div>
+            </form>
+
+            <div class="text-center">
+              <p class="text-sm text-muted-light dark:text-muted-dark">
+                Didn't receive the code?
+              </p>
+              <button
+                id="resend-otp-btn"
+                class="text-sm font-medium text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                disabled
+              >
+                <span id="resend-text">Resend code</span>
+                <span id="resend-timer" class="resend-timer"> in 60s</span>
+              </button>
+            </div>
+
+            <div class="text-center">
+              <button
+                id="change-number-btn"
+                class="text-sm text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors"
+              >
+                Change phone number
+              </button>
+            </div>
+          </div>
+
+          <p class="text-center text-sm text-muted-light dark:text-muted-dark">
+            Already have an account?
+            <a
+              class="font-medium text-primary hover:underline"
+              href="login.html"
+              >Sign in</a
+            >
+          </p>
+        </div>
+      </main>
+    </div>
+
+    <!-- reCAPTCHA container (hidden) -->
+    <div id="recaptcha-container"></div>
+
+    <script type="module">
+      // Firebase configuration (from debug-firebase.html)
+      const firebaseConfig = {
+        apiKey: "AIzaSyACa7KS2Bupy2HdJpwZjezkuWi18W6gbIk",
+        authDomain: "liquidloveweb.firebaseapp.com",
+        projectId: "liquidloveweb",
+        storageBucket: "liquidloveweb.firebasestorage.app",
+        messagingSenderId: "874984085077",
+        appId: "1:874984085077:web:4a70823226e813e35fa6dc",
+        measurementId: "G-L18K6DSE0Z",
+      };
+
+      // Firebase imports
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAuth,
+        RecaptchaVerifier,
+        signInWithPhoneNumber,
+        updateProfile,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        serverTimestamp,
+        query,
+        collection,
+        where,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+      // Initialize Firebase
+      let app, auth, db;
+
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        console.log("✓ Firebase initialized successfully");
+      } catch (error) {
+        console.error("❌ Firebase initialization failed:", error);
+        showSnackbar(
+          "Firebase initialization failed. Please refresh the page.",
+          "error"
+        );
+      }
+
+      class MobileRegistration {
+        constructor() {
+          this.recaptchaVerifier = null;
+          this.confirmationResult = null;
+          this.formData = {};
+          this.resendTimer = null;
+          this.resendCountdown = 60;
+          this.currentStep = 1;
+          this.init();
+        }
+
+        init() {
+          this.setupRecaptcha();
+          this.setupEventListeners();
+          this.setupFormValidation();
+          this.loadTransitionSystem();
+        }
+
+        setupRecaptcha() {
+          try {
+            this.recaptchaVerifier = new RecaptchaVerifier(
+              auth,
+              "recaptcha-container",
+              {
+                size: "invisible",
+                callback: (response) => {
+                  console.log("✓ reCAPTCHA solved");
+                },
+                "expired-callback": () => {
+                  console.log("⚠️ reCAPTCHA expired");
+                  showSnackbar(
+                    "Security verification expired. Please try again.",
+                    "error"
+                  );
+                },
+              }
+            );
+            console.log("✓ reCAPTCHA verifier setup complete");
+          } catch (error) {
+            console.error("❌ reCAPTCHA setup failed:", error);
+            showSnackbar(
+              "Security verification setup failed. Please refresh the page.",
+              "error"
+            );
+          }
+        }
+
+        setupEventListeners() {
+          // Phone form submission
+          document
+            .getElementById("phone-form")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              this.handlePhoneSubmission();
+            });
+
+          // OTP form submission
+          document
+            .getElementById("otp-form")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              this.handleOTPVerification();
+            });
+
+          // Resend OTP button
+          document
+            .getElementById("resend-otp-btn")
+            .addEventListener("click", () => {
+              this.resendOTP();
+            });
+
+          // Change number button
+          document
+            .getElementById("change-number-btn")
+            .addEventListener("click", () => {
+              this.goBackToPhoneStep();
+            });
+
+          // Phone number formatting
+          document
+            .getElementById("phone-number")
+            .addEventListener("input", (e) => {
+              this.formatPhoneNumber(e.target);
+            });
+
+          // Auto-submit OTP when 6 digits entered
+          document
+            .getElementById("otp-input")
+            .addEventListener("input", (e) => {
+              const value = e.target.value.replace(/\D/g, "");
+              e.target.value = value;
+
+              if (value.length === 6) {
+                setTimeout(() => {
+                  this.handleOTPVerification();
+                }, 500);
+              }
+            });
+        }
+
+        setupFormValidation() {
+          const inputs = document.querySelectorAll(
+            "input[required], select[required]"
+          );
+
+          inputs.forEach((input) => {
+            input.addEventListener("blur", () => {
+              this.validateField(input);
+            });
+
+            input.addEventListener("input", () => {
+              if (input.classList.contains("field-error")) {
+                this.validateField(input);
+              }
+            });
+          });
+        }
+
+        validateField(field) {
+          const value = field.value.trim();
+          let isValid = true;
+          let errorMessage = "";
+
+          // Clear previous validation
+          this.clearFieldValidation(field);
+
+          // Required validation
+          if (field.required && !value) {
+            isValid = false;
+            errorMessage = "This field is required.";
+          }
+
+          // Specific validations
+          if (isValid && value) {
+            switch (field.name) {
+              case "firstName":
+              case "lastName":
+                if (!/^[a-zA-Z\s]+$/.test(value) || value.length < 2) {
+                  isValid = false;
+                  errorMessage =
+                    "Name must contain only letters and be at least 2 characters.";
+                }
+                break;
+
+              case "phoneNumber":
+                const cleanPhone = value.replace(/\D/g, "");
+                if (cleanPhone.length !== 10) {
+                  isValid = false;
+                  errorMessage = "Please enter a valid 10-digit phone number.";
+                }
+                break;
+
+              case "dob":
+                const age = this.calculateAge(value);
+                if (age < 16 || age > 80) {
+                  isValid = false;
+                  errorMessage = "Age must be between 16 and 80 years.";
+                }
+                break;
+
+              case "otpCode":
+                if (!/^\d{6}$/.test(value)) {
+                  isValid = false;
+                  errorMessage = "Please enter a valid 6-digit code.";
+                }
+                break;
+            }
+          }
+
+          // Apply validation styling
+          if (isValid) {
+            field.classList.add("field-success");
+            field.classList.remove("field-error");
+          } else {
+            field.classList.add("field-error");
+            field.classList.remove("field-success");
+            this.showFieldError(field, errorMessage);
+          }
+
+          return isValid;
+        }
+
+        clearFieldValidation(field) {
+          field.classList.remove("field-error", "field-success");
+          const errorMsg = field.parentNode.querySelector(
+            ".field-error-message"
+          );
+          if (errorMsg) {
+            errorMsg.remove();
+          }
+        }
+
+        showFieldError(field, message) {
+          const errorDiv = document.createElement("div");
+          errorDiv.className =
+            "field-error-message text-sm text-red-600 dark:text-red-400 mt-1";
+          errorDiv.textContent = message;
+          field.parentNode.appendChild(errorDiv);
+        }
+
+        formatPhoneNumber(input) {
+          let value = input.value.replace(/\D/g, "");
+
+          if (value.length >= 6) {
+            value = value.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+          } else if (value.length >= 3) {
+            value = value.replace(/(\d{3})(\d{0,3})/, "($1) $2");
+          }
+
+          input.value = value;
+        }
+
+        calculateAge(dateOfBirth) {
+          const today = new Date();
+          const birthDate = new Date(dateOfBirth);
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const monthDiff = today.getMonth() - birthDate.getMonth();
+
+          if (
+            monthDiff < 0 ||
+            (monthDiff === 0 && today.getDate() < birthDate.getDate())
+          ) {
+            age--;
+          }
+
+          return age;
+        }
+
+        async handlePhoneSubmission() {
+          console.log("📱 Starting phone number verification...");
+
+          // Validate form
+          const form = document.getElementById("phone-form");
+          const inputs = form.querySelectorAll(
+            "input[required], select[required]"
+          );
+          let isFormValid = true;
+
+          inputs.forEach((input) => {
+            if (!this.validateField(input)) {
+              isFormValid = false;
+            }
+          });
+
+          if (!isFormValid) {
+            showSnackbar("Please fix all errors before continuing.", "error");
+            return;
+          }
+
+          // Store form data
+          this.formData = this.getFormData();
+
+          // Format phone number for Firebase
+          const phoneNumber = this.formatPhoneForFirebase(
+            this.formData.phoneNumber
+          );
+          console.log("📞 Formatted phone number:", phoneNumber);
+
+          try {
+            this.showPhoneLoadingState();
+
+            // Send OTP
+            console.log("📤 Sending OTP...");
+            this.confirmationResult = await signInWithPhoneNumber(
+              auth,
+              phoneNumber,
+              this.recaptchaVerifier
+            );
+
+            console.log("✓ OTP sent successfully");
+            showSnackbar("Verification code sent to your phone!", "success");
+
+            // Move to OTP step
+            this.showOTPStep(phoneNumber);
+            this.startResendTimer();
+          } catch (error) {
+            console.error("❌ Failed to send OTP:", error);
+            this.handleAuthError(error);
+          } finally {
+            this.hidePhoneLoadingState();
+          }
+        }
+
+        async handleOTPVerification() {
+          const otpCode = document.getElementById("otp-input").value.trim();
+
+          if (!otpCode || otpCode.length !== 6) {
+            showSnackbar(
+              "Please enter a valid 6-digit verification code.",
+              "error"
+            );
+            return;
+          }
+
+          console.log("🔐 Verifying OTP code...");
+
+          try {
+            this.showOTPLoadingState();
+
+            // Verify OTP
+            const result = await this.confirmationResult.confirm(otpCode);
+            const user = result.user;
+
+            console.log("✓ OTP verified successfully. User ID:", user.uid);
+
+            // Update user profile
+            await updateProfile(user, {
+              displayName: `${this.formData.firstName} ${this.formData.lastName}`,
+            });
+            console.log("✓ User profile updated");
+
+            // Save user data to Firestore
+            await this.saveUserToFirestore(user.uid);
+            console.log("✓ User data saved to Firestore");
+
+            // Show success and redirect
+            this.showSuccessStep();
+            showSnackbar(
+              "Registration successful! Redirecting to login...",
+              "success"
+            );
+
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 2000);
+          } catch (error) {
+            console.error("❌ OTP verification failed:", error);
+            this.handleAuthError(error);
+          } finally {
+            this.hideOTPLoadingState();
+          }
+        }
+
+        async saveUserToFirestore(userId) {
+          try {
+            const userData = {
+              firstName: this.formData.firstName,
+              lastName: this.formData.lastName,
+              phone: this.formatPhoneForFirebase(this.formData.phoneNumber),
+              dateOfBirth: this.formData.dob,
+              gender: this.formData.gender,
+              bloodGroup: this.formData.bloodGroup,
+              role: "user",
+              status: "active",
+              emailVerified: false,
+              phoneVerified: true,
+              registrationDate: new Date().toISOString(),
+              totalDonations: 0,
+              lastDonation: null,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+              isActive: true,
+            };
+
+            // Save to users collection
+            await setDoc(doc(db, "users", userId), userData);
+
+            // Also save to donors collection for blood bank queries
+            const donorData = {
+              ...userData,
+              donorId: userId,
+              eligibilityStatus: "pending",
+              donationHistory: [],
+            };
+
+            await setDoc(doc(db, "donors", userId), donorData);
+
+            console.log("✓ User data saved to both collections");
+          } catch (error) {
+            console.error("❌ Error saving user data:", error);
+            throw new Error(
+              "Failed to save user information. Please try again."
+            );
+          }
+        }
+
+        async resendOTP() {
+          console.log("🔄 Resending OTP...");
+
+          try {
+            // Reset reCAPTCHA
+            this.recaptchaVerifier.clear();
+            this.setupRecaptcha();
+
+            const phoneNumber = this.formatPhoneForFirebase(
+              this.formData.phoneNumber
+            );
+
+            // Send new OTP
+            this.confirmationResult = await signInWithPhoneNumber(
+              auth,
+              phoneNumber,
+              this.recaptchaVerifier
+            );
+
+            console.log("✓ OTP resent successfully");
+            showSnackbar("New verification code sent!", "success");
+
+            // Restart timer
+            this.startResendTimer();
+          } catch (error) {
+            console.error("❌ Failed to resend OTP:", error);
+            this.handleAuthError(error);
+          }
+        }
+
+        showOTPStep(phoneNumber) {
+          // Update step indicator
+          this.updateStepIndicator(2);
+
+          // Hide phone step, show OTP step
+          document.getElementById("phone-step").classList.add("hidden");
+          document.getElementById("otp-step").classList.remove("hidden");
+
+          // Display phone number
+          document.getElementById("phone-display").textContent = phoneNumber;
+
+          // Focus on OTP input
+          setTimeout(() => {
+            document.getElementById("otp-input").focus();
+          }, 300);
+        }
+
+        showSuccessStep() {
+          this.updateStepIndicator(3);
+        }
+
+        goBackToPhoneStep() {
+          // Update step indicator
+          this.updateStepIndicator(1);
+
+          // Show phone step, hide OTP step
+          document.getElementById("otp-step").classList.add("hidden");
+          document.getElementById("phone-step").classList.remove("hidden");
+
+          // Clear OTP input
+          document.getElementById("otp-input").value = "";
+
+          // Stop resend timer
+          if (this.resendTimer) {
+            clearInterval(this.resendTimer);
+          }
+
+          // Reset reCAPTCHA
+          if (this.recaptchaVerifier) {
+            this.recaptchaVerifier.clear();
+            this.setupRecaptcha();
+          }
+        }
+
+        updateStepIndicator(step) {
+          this.currentStep = step;
+
+          // Reset all steps
+          for (let i = 1; i <= 3; i++) {
+            const stepEl = document.getElementById(`step-${i}`);
+            const lineEl = document.getElementById(`step-line-${i}`);
+
+            stepEl.className = "step";
+
+            if (i < step) {
+              stepEl.classList.add("step-completed");
+              if (lineEl) lineEl.classList.add("completed");
+            } else if (i === step) {
+              stepEl.classList.add("step-active");
+            } else {
+              stepEl.classList.add("step-inactive");
+            }
+          }
+        }
+
+        startResendTimer() {
+          const resendBtn = document.getElementById("resend-otp-btn");
+          const resendText = document.getElementById("resend-text");
+          const resendTimer = document.getElementById("resend-timer");
+
+          this.resendCountdown = 60;
+          resendBtn.disabled = true;
+
+          this.resendTimer = setInterval(() => {
+            this.resendCountdown--;
+            resendTimer.textContent = ` in ${this.resendCountdown}s`;
+
+            if (this.resendCountdown <= 0) {
+              clearInterval(this.resendTimer);
+              resendBtn.disabled = false;
+              resendTimer.textContent = "";
+            }
+          }, 1000);
+        }
+
+        getFormData() {
+          const form = document.getElementById("phone-form");
+          const formData = new FormData(form);
+          return Object.fromEntries(formData.entries());
+        }
+
+        formatPhoneForFirebase(phone) {
+          // Remove all non-digits
+          const cleaned = phone.replace(/\D/g, "");
+
+          // Add US country code if not present
+          if (cleaned.length === 10) {
+            return "+91" + cleaned;
+          }
+
+          return "+" + cleaned;
+        }
+
+        showPhoneLoadingState() {
+          const btn = document.getElementById("send-otp-btn");
+          const text = document.getElementById("send-otp-text");
+          const loading = document.getElementById("send-otp-loading");
+
+          btn.disabled = true;
+          text.classList.add("hidden");
+          loading.classList.remove("hidden");
+        }
+
+        hidePhoneLoadingState() {
+          const btn = document.getElementById("send-otp-btn");
+          const text = document.getElementById("send-otp-text");
+          const loading = document.getElementById("send-otp-loading");
+
+          btn.disabled = false;
+          text.classList.remove("hidden");
+          loading.classList.add("hidden");
+        }
+
+        showOTPLoadingState() {
+          const btn = document.getElementById("verify-otp-btn");
+          const text = document.getElementById("verify-otp-text");
+          const loading = document.getElementById("verify-otp-loading");
+
+          btn.disabled = true;
+          text.classList.add("hidden");
+          loading.classList.remove("hidden");
+        }
+
+        hideOTPLoadingState() {
+          const btn = document.getElementById("verify-otp-btn");
+          const text = document.getElementById("verify-otp-text");
+          const loading = document.getElementById("verify-otp-loading");
+
+          btn.disabled = false;
+          text.classList.remove("hidden");
+          loading.classList.add("hidden");
+        }
+
+        handleAuthError(error) {
+          console.error("🚨 Authentication error:", error);
+
+          let message = "An error occurred. Please try again.";
+
+          switch (error.code) {
+            case "auth/invalid-phone-number":
+              message =
+                "The phone number is invalid. Please enter a valid 10-digit mobile number.";
+              break;
+            case "auth/too-many-requests":
+              message = "Too many attempts. Please try again later.";
+              break;
+            case "auth/invalid-verification-code":
+              message =
+                "Invalid verification code. Please check the code and try again.";
+              break;
+            case "auth/code-expired":
+              message =
+                "Verification code has expired. Please request a new code.";
+              break;
+            case "auth/missing-verification-code":
+              message = "Please enter the verification code.";
+              break;
+            case "auth/quota-exceeded":
+              message = "SMS quota exceeded. Please try again later.";
+              break;
+            case "auth/captcha-check-failed":
+              message = "Security verification failed. Please try again.";
+              break;
+            case "auth/network-request-failed":
+              message =
+                "Network error. Please check your internet connection and try again.";
+              break;
+            default:
+              message =
+                error.message || "Authentication failed. Please try again.";
+          }
+
+          showSnackbar(message, "error");
+        }
+
+        loadTransitionSystem() {
+          if (!document.querySelector('script[src="transitions.js"]')) {
+            const script = document.createElement("script");
+            script.src = "transitions.js";
+            document.head.appendChild(script);
+          }
+        }
+      }
+
+      // Utility function to show snackbar notifications
+      function showSnackbar(message, type = "info") {
+        // Remove existing snackbars
+        const existingSnackbars = document.querySelectorAll(".snackbar");
+        existingSnackbars.forEach((snackbar) => snackbar.remove());
+
+        const snackbar = document.createElement("div");
+        snackbar.className = `snackbar ${type}`;
+
+        const icon =
+          type === "success"
+            ? "check_circle"
+            : type === "error"
+            ? "error"
+            : type === "info"
+            ? "info"
+            : "notifications";
+
+        snackbar.innerHTML = `
+        <div class="flex items-center">
+            <span class="material-symbols-outlined mr-2">${icon}</span>
+            <span>${message}</span>
+        </div>
+    `;
+
+        document.body.appendChild(snackbar);
+
+        // Animate in
+        setTimeout(() => {
+          snackbar.classList.add("show");
+        }, 100);
+
+        // Remove after 5 seconds
+        setTimeout(() => {
+          snackbar.classList.remove("show");
+          setTimeout(() => {
+            if (snackbar.parentNode) {
+              snackbar.parentNode.removeChild(snackbar);
+            }
+          }, 300);
+        }, 5000);
+      }
+
+      // Initialize registration system when DOM is ready
+      document.addEventListener("DOMContentLoaded", () => {
+        if (!isFirebaseReady()) {
+          showSnackbar(
+            "Firebase is not properly initialized. Please refresh the page.",
+            "error"
+          );
+          return;
+        }
+
+        window.mobileRegistration = new MobileRegistration();
+        console.log("✓ Mobile registration system initialized");
+      });
+
+      // Utility function to check Firebase readiness
+      function isFirebaseReady() {
+        return !!(app && auth && db);
+      }
+
+      // Handle page visibility changes
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && window.mobileRegistration) {
+          console.log("📱 Page became visible");
+        }
+      });
+
+      // Handle browser back/forward navigation
+      window.addEventListener("pageshow", (e) => {
+        if (e.persisted) {
+          // Page was loaded from cache, reset state
+          if (window.mobileRegistration) {
+            window.mobileRegistration.goBackToPhoneStep();
+          }
+        }
+      });
+
+      // Cleanup on page unload
+      window.addEventListener("beforeunload", () => {
+        if (
+          window.mobileRegistration &&
+          window.mobileRegistration.resendTimer
+        ) {
+          clearInterval(window.mobileRegistration.resendTimer);
+        }
+      });
+    </script>
+  </body>
+</html>
