@@ -59,22 +59,30 @@
         backdrop-filter: blur(4px);
       }
 
-      .sidebar-mobile {
+      .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s ease-in-out;
+        width: 256px; /* w-64 = 16rem = 256px */
       }
 
-      .sidebar-mobile.open {
+      .sidebar.open {
         transform: translateX(0);
       }
 
-      .sidebar-desktop {
-        transform: translateX(0);
-        transition: transform 0.3s ease-in-out;
+      .main-content {
+        width: 100%;
+        transition: margin-left 0.3s ease-in-out;
       }
 
-      .sidebar-desktop.closed {
-        transform: translateX(-100%);
+      .main-content.sidebar-open {
+        margin-left: 256px;
+      }
+
+      /* Mobile specific styles */
+      @media (max-width: 768px) {
+        .main-content.sidebar-open {
+          margin-left: 0;
+        }
       }
     </style>
   </head>
@@ -91,7 +99,7 @@
       <!-- Sidebar -->
       <aside
         id="sidebar"
-        class="fixed md:relative w-64 h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar-mobile md:sidebar-desktop"
+        class="fixed h-full flex flex-col gap-8 border-r border-slate-200 bg-card-light p-6 dark:border-slate-700 dark:bg-card-dark z-50 sidebar"
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -102,10 +110,10 @@
               LifeFlow
             </h1>
           </div>
-          <!-- Mobile Close Button -->
+          <!-- Close Button -->
           <button
             id="close-sidebar"
-            class="md:hidden flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
+            class="flex items-center justify-center size-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <span
               class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
@@ -187,16 +195,16 @@
       </aside>
 
       <!-- Main Content -->
-      <main class="flex-1 overflow-y-auto">
+      <main id="main-content" class="main-content overflow-y-auto">
         <div class="p-4 sm:p-6 lg:p-8">
           <div class="mx-auto max-w-7xl">
-            <!-- Header with Mobile Menu Button -->
+            <!-- Header with Menu Button -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
               <div class="flex items-center gap-4">
-                <!-- Mobile Menu Button -->
+                <!-- Menu Button (always visible) -->
                 <button
                   id="menu-button"
-                  class="md:hidden flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
                 >
                   <span class="material-symbols-outlined">menu</span>
                 </button>
@@ -208,12 +216,12 @@
               </div>
               <div class="flex items-center gap-2 sm:gap-4">
                 <button
-                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                  class="flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
                 >
                   <span class="material-symbols-outlined">search</span>
                 </button>
                 <button
-                  class="relative flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                  class="relative flex items-center justify-center size-10 rounded-full bg-card-light dark:bg-card-dark text-text-muted-light dark:text-text-muted-dark hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
                 >
                   <span class="material-symbols-outlined">notifications</span>
                   <span
@@ -588,52 +596,86 @@
     </div>
 
     <script>
-      // Mobile menu functionality
+      let sidebarOpen = false;
+
+      // Get elements
       const menuButton = document.getElementById("menu-button");
       const sidebar = document.getElementById("sidebar");
       const sidebarOverlay = document.getElementById("sidebar-overlay");
       const closeSidebar = document.getElementById("close-sidebar");
+      const mainContent = document.getElementById("main-content");
 
-      function openSidebar() {
-        sidebar.classList.add("open");
-        sidebarOverlay.classList.remove("hidden");
-        document.body.style.overflow = "hidden";
+      function toggleSidebar() {
+        sidebarOpen = !sidebarOpen;
+
+        if (sidebarOpen) {
+          sidebar.classList.add("open");
+          // On desktop, adjust main content margin
+          if (window.innerWidth >= 768) {
+            mainContent.classList.add("sidebar-open");
+          } else {
+            // On mobile, show overlay
+            sidebarOverlay.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+          }
+        } else {
+          sidebar.classList.remove("open");
+          mainContent.classList.remove("sidebar-open");
+          sidebarOverlay.classList.add("hidden");
+          document.body.style.overflow = "auto";
+        }
       }
 
       function closeSidebarFunc() {
-        sidebar.classList.remove("open");
-        sidebarOverlay.classList.add("hidden");
-        document.body.style.overflow = "auto";
+        if (sidebarOpen) {
+          toggleSidebar();
+        }
       }
 
-      menuButton.addEventListener("click", openSidebar);
+      // Event listeners
+      menuButton.addEventListener("click", toggleSidebar);
       closeSidebar.addEventListener("click", closeSidebarFunc);
+
+      // Close sidebar when clicking overlay (mobile only)
       sidebarOverlay.addEventListener("click", closeSidebarFunc);
-
-      // Close sidebar when clicking outside on mobile
-      document.addEventListener("click", function (event) {
-        const isClickInsideSidebar = sidebar.contains(event.target);
-        const isClickOnMenuButton = menuButton.contains(event.target);
-
-        if (
-          !isClickInsideSidebar &&
-          !isClickOnMenuButton &&
-          window.innerWidth < 768
-        ) {
-          if (!sidebarOverlay.classList.contains("hidden")) {
-            closeSidebarFunc();
-          }
-        }
-      });
 
       // Handle window resize
       window.addEventListener("resize", function () {
         if (window.innerWidth >= 768) {
-          // Desktop view - ensure sidebar is visible and overlay is hidden
-          sidebar.classList.remove("open");
+          // Desktop view - hide overlay and allow margin adjustment
           sidebarOverlay.classList.add("hidden");
           document.body.style.overflow = "auto";
+
+          if (sidebarOpen) {
+            mainContent.classList.add("sidebar-open");
+          } else {
+            mainContent.classList.remove("sidebar-open");
+          }
+        } else {
+          // Mobile view - remove margin adjustment
+          mainContent.classList.remove("sidebar-open");
+
+          if (sidebarOpen) {
+            sidebarOverlay.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+          }
         }
+      });
+
+      // Close sidebar with Escape key
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && sidebarOpen) {
+          closeSidebarFunc();
+        }
+      });
+
+      // Initialize - ensure sidebar is closed on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        sidebarOpen = false;
+        sidebar.classList.remove("open");
+        mainContent.classList.remove("sidebar-open");
+        sidebarOverlay.classList.add("hidden");
+        document.body.style.overflow = "auto";
       });
     </script>
   </body>
